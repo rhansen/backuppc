@@ -1,0 +1,7 @@
+debian/backuppc/
+
+debian/backuppc.debhelper.log
+debian/backuppc.*.debhelper
+
+build-stamp
+configure-stamp
