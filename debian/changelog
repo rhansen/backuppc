@@ -1,4 +1,4 @@
-backuppc (4.0.0~alpha3-1) UNRELEASED; urgency=medium
+backuppc (4.0.0) stable; urgency=medium
 
   * Initial release.
 
