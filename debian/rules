@@ -59,15 +59,17 @@ install: build
 	chmod 755 ./makeDist
 	./makeDist --releasedate "`date +'%d %b %Y'`" --version "4.0.0"
 
-	#rsync -av ./dist/BackupPC-4.0.0/ .
+	( cd ./dist/BackupPC-4.0.0/; \
+		chmod 755 ./configure.pl; \
+		./configure.pl --batch --bin-path perl=/usr/bin/perl --bin-path tar=/bin/tar --bin-path smbclient=/usr/bin/smbclient --bin-path nmblookup=/usr/bin/nmblookup --bin-path rsync=/usr/bin/rsync --bin-path ping=/bin/ping --bin-path df=/bin/df --bin-path ssh=/usr/bin/ssh --bin-path sendmail=/usr/sbin/sendmail --bin-path hostname=/bin/hostname --bin-path split=/usr/bin/split --bin-path par2=/usr/bin/par2 --bin-path cat=/bin/cat --bin-path gzip=/bin/gzip --bin-path bzip2=/bin/bzip2 --config-dir /etc/backuppc --no-fhs --cgi-dir /usr/share/backuppc/cgi-bin --data-dir /var/lib/backuppc --dest-dir $(CURDIR)/debian/backuppc/ --html-dir /usr/share/backuppc/image --html-dir-url /backuppc/image --install-dir /usr/share/backuppc --uid-ignore --hostname XXXXXX; \
+		pod2man --utf8 --section=8 --center="BackupPC manual" doc/BackupPC.pod backuppc.8; \
+	 )
 
-	(cd ./dist/BackupPC-4.0.0/; chmod 755 ./configure.pl; ./configure.pl --batch --bin-path perl=/usr/bin/perl --bin-path tar=/bin/tar --bin-path smbclient=/usr/bin/smbclient --bin-path nmblookup=/usr/bin/nmblookup --bin-path rsync=/usr/bin/rsync --bin-path ping=/bin/ping --bin-path df=/bin/df --bin-path ssh=/usr/bin/ssh --bin-path sendmail=/usr/sbin/sendmail --bin-path hostname=/bin/hostname --bin-path split=/usr/bin/split --bin-path par2=/usr/bin/par2 --bin-path cat=/bin/cat --bin-path gzip=/bin/gzip --bin-path bzip2=/bin/bzip2 --config-dir /etc/backuppc --no-fhs --cgi-dir /usr/share/backuppc/cgi-bin --data-dir /var/lib/backuppc --dest-dir $(CURDIR)/debian/backuppc/ --html-dir /usr/share/backuppc/image --html-dir-url /backuppc/image --install-dir /usr/share/backuppc --uid-ignore --hostname XXXXXX)
-	    
-	pod2man --utf8 --section=8 --center="BackupPC manual" ./dist/BackupPC-4.0.0/doc/BackupPC.pod backuppc.8
 	perl -e "s/.IX Title.*/.SH NAME\nbackuppc \\- BackupPC manual/g" -p -i.tmp backuppc.8
 	mv -f debian/backuppc/usr/share/backuppc/cgi-bin/* debian/backuppc/usr/share/backuppc/lib/realindex.cgi
-	install --mode=755 -D index.cgi debian/backuppc/usr/lib/backuppc/cgi-bin/index.cgi
+	#install --mode=755 -D index.cgi debian/backuppc/usr/lib/backuppc/cgi-bin/index.cgi
 	install --mode=644 -D conf/hosts debian/backuppc/etc/backuppc/hosts
+
 	install --mode=644 debian/localhost.pl debian/backuppc/etc/backuppc
 	install --mode=644 debian/apache.conf debian/backuppc/etc/backuppc
 	-rm -rf debian/backuppc/var/lib/backuppc/conf/
