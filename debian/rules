@@ -33,7 +33,7 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	#$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) debian/setuidwrapper.c -o index.cgi
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) debian/setuidwrapper.c -o index.cgi
 	touch build-stamp
 
 clean:
@@ -48,6 +48,9 @@ clean:
 	# Cleanup ./makeDist output
 	rm -rf dist
 
+	# Cleanup buildroot
+	rm -rf buildroot
+
 	dh_clean
 
 install: build
@@ -57,14 +60,16 @@ install: build
 	dh_installdirs
 
 	# Add here commands to install the package into debian/backuppc.
-	mkdir -p debian/backuppc/usr/share/backuppc/bin
-	mkdir -p debian/backuppc/usr/share/backuppc/share/doc/BackupPC
 	chmod 755 ./makeDist
 	./makeDist --releasedate "`date +'%d %b %Y'`" --version "4.1.0"
 
-	( cd ./dist/BackupPC-4.1.0/; \
+	mkdir buildroot
+	tar -xzf dist/*tar.gz --directory buildroot/ --strip-components=1
+
+	# TODO --config-only yes or no?
+	( cd ./buildroot/; \
 		chmod 755 ./configure.pl; \
-		./configure.pl --config-only --batch --no-fhs --uid-ignore --hostname XXXXXX \
+		./configure.pl --batch --no-fhs --uid-ignore --hostname XXXXXX \
 			--bin-path perl=/usr/bin/perl \
 			--bin-path tar=/bin/tar \
 			--bin-path smbclient=/usr/bin/smbclient \
@@ -92,21 +97,21 @@ install: build
 	 )
 
         # TODO Some/most of this is obsolete with the --config-only option!
-	#mv -f debian/backuppc/usr/share/backuppc/cgi-bin/* debian/backuppc/usr/share/backuppc/lib/realindex.cgi
-	#install --mode=755 -D index.cgi debian/backuppc/usr/lib/backuppc/cgi-bin/index.cgi
-	#install --mode=644 -D conf/hosts debian/backuppc/etc/backuppc/hosts
+	mv -f debian/backuppc/usr/share/backuppc/cgi-bin/* debian/backuppc/usr/share/backuppc/lib/realindex.cgi
+	install --mode=755 -D index.cgi debian/backuppc/usr/lib/backuppc/cgi-bin/index.cgi
+	install --mode=644 -D conf/hosts debian/backuppc/etc/backuppc/hosts
 
-	#install --mode=644 debian/localhost.pl debian/backuppc/etc/backuppc
-	#install --mode=644 debian/apache.conf debian/backuppc/etc/backuppc
+	install --mode=644 debian/localhost.pl debian/backuppc/etc/backuppc
+	install --mode=644 debian/apache.conf debian/backuppc/etc/backuppc
 	-rm -rf debian/backuppc/var/lib/backuppc/conf/
 	mkdir -p debian/backuppc/usr/share/backuppc/cgi-bin
 	(cd debian/backuppc/usr/share/backuppc/cgi-bin; ln -s ../image; ln -s /usr/lib/backuppc/cgi-bin/index.cgi )
 	patch --no-backup-if-mismatch -p0 < debian/config.pl.diff
-	mkdir -p debian/backuppc/usr/share/backuppc/conf
-	#install --mode=644 debian/backuppc/etc/backuppc/config.pl debian/backuppc/usr/share/backuppc/conf/
+	mkdir -p debian/backuppc/usr/share/backuppc/conf/
+	install --mode=644 debian/backuppc/etc/backuppc/config.pl debian/backuppc/usr/share/backuppc/conf/
 	rm -rf debian/backuppc/etc/backuppc/config.pl
-	mkdir -p debian/backuppc/var/lib/backuppc/conf
-	(cd debian/backuppc/var/lib/backuppc/conf; ln -s ../../../../etc/backuppc/config.pl )
+	mkdir debian/backuppc/var/lib/backuppc/conf
+	ln -s /etc/backuppc/config.pl debian/backuppc/var/lib/backuppc/conf/config.pl
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -120,14 +125,14 @@ binary-arch: build install
 	dh_installdocs 
 	dh_installexamples debian/examples/*
 	mv -f debian/backuppc/usr/share/backuppc/share/doc/* debian/backuppc/usr/share/doc/backuppc/
-	mv debian/backuppc/usr/share/doc/backuppc/BackupPC/* debian/backuppc/usr/share/doc/backuppc
+	mv debian/backuppc/usr/share/doc/backuppc/BackupPC/* debian/backuppc/usr/share/doc/backuppc/
 	rmdir debian/backuppc/usr/share/doc/backuppc/BackupPC
 	mkdir debian/backuppc/usr/share/backuppc/share/doc/BackupPC
 	(cd debian/backuppc/usr/share/backuppc/share/doc/BackupPC; ln -s ../../../../doc/backuppc/BackupPC.html)
 	dh_installmenu
 	dh_installinit
 	dh_installcron
-	dh_installman backuppc.8
+	dh_installman buildroot/backuppc.8
 	dh_installinfo
 #	dh_undocumented
 	dh_installchangelogs ChangeLog
