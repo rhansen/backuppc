@@ -45,6 +45,9 @@ clean:
 	rm -f init.d/*-backuppc*
 	rm -f backuppc.8*
 
+	# Cleanup ./makeDist output
+	rm -rf dist
+
 	dh_clean
 
 install: build
