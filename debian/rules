@@ -88,9 +88,10 @@ install: build
 			--html-dir-url /backuppc/image \
 			--install-dir /usr/share/backuppc; \
 		pod2man --utf8 --section=8 --center="BackupPC manual" doc/BackupPC.pod backuppc.8; \
+		perl -e "s/.IX Title.*/.SH NAME\nbackuppc \\- BackupPC manual/g" -p -i.tmp backuppc.8; \
 	 )
 
-	perl -e "s/.IX Title.*/.SH NAME\nbackuppc \\- BackupPC manual/g" -p -i.tmp backuppc.8
+        # TODO Some/most of this is obsolete with the --config-only option!
 	mv -f debian/backuppc/usr/share/backuppc/cgi-bin/* debian/backuppc/usr/share/backuppc/lib/realindex.cgi
 	#install --mode=755 -D index.cgi debian/backuppc/usr/lib/backuppc/cgi-bin/index.cgi
 	install --mode=644 -D conf/hosts debian/backuppc/etc/backuppc/hosts
