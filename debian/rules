@@ -92,19 +92,20 @@ install: build
 	 )
 
         # TODO Some/most of this is obsolete with the --config-only option!
-	mv -f debian/backuppc/usr/share/backuppc/cgi-bin/* debian/backuppc/usr/share/backuppc/lib/realindex.cgi
+	#mv -f debian/backuppc/usr/share/backuppc/cgi-bin/* debian/backuppc/usr/share/backuppc/lib/realindex.cgi
 	#install --mode=755 -D index.cgi debian/backuppc/usr/lib/backuppc/cgi-bin/index.cgi
-	install --mode=644 -D conf/hosts debian/backuppc/etc/backuppc/hosts
+	#install --mode=644 -D conf/hosts debian/backuppc/etc/backuppc/hosts
 
-	install --mode=644 debian/localhost.pl debian/backuppc/etc/backuppc
-	install --mode=644 debian/apache.conf debian/backuppc/etc/backuppc
+	#install --mode=644 debian/localhost.pl debian/backuppc/etc/backuppc
+	#install --mode=644 debian/apache.conf debian/backuppc/etc/backuppc
 	-rm -rf debian/backuppc/var/lib/backuppc/conf/
+	mkdir -p debian/backuppc/usr/share/backuppc/cgi-bin
 	(cd debian/backuppc/usr/share/backuppc/cgi-bin; ln -s ../image; ln -s /usr/lib/backuppc/cgi-bin/index.cgi )
 	patch --no-backup-if-mismatch -p0 < debian/config.pl.diff
 	mkdir -p debian/backuppc/usr/share/backuppc/conf
-	install --mode=644 debian/backuppc/etc/backuppc/config.pl debian/backuppc/usr/share/backuppc/conf/
+	#install --mode=644 debian/backuppc/etc/backuppc/config.pl debian/backuppc/usr/share/backuppc/conf/
 	rm -rf debian/backuppc/etc/backuppc/config.pl
-	mkdir debian/backuppc/var/lib/backuppc/conf
+	mkdir -p debian/backuppc/var/lib/backuppc/conf
 	(cd debian/backuppc/var/lib/backuppc/conf; ln -s ../../../../etc/backuppc/config.pl )
 
 # Build architecture-independent files here.

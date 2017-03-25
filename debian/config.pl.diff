@@ -1,5 +1,5 @@
---- config.pl   2005-03-03 23:39:20.000000000 +0100
-+++ debian/backuppc/etc/backuppc/config.pl      2005-03-03 18:55:02.000000000 +0100
+--- debian/backuppc/etc/backuppc/config.pl	2005-03-03 23:39:20.000000000 +0100
++++ debian/backuppc/etc/backuppc/config.pl	2005-03-03 18:55:02.000000000 +0100
 @@ -41,7 +41,10 @@
  #
  # Host name on which the BackupPC server is running.
