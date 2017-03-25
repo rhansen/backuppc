@@ -1,3 +1,15 @@
+backuppc (4.1.0) stable; urgency=medium
+
+  * BackupPC_migrateV3toV4 optionally allows old 3.x backups to be migrated to 4.x format, eliminating the hardlinks used by 3.x.
+    (BackupPC 4.x can view/browse/restore 3.x backups, so it's not necessary to run BackupPC_migrateV3toV4)
+  * modern CSS (from Ernesto Carrea)
+  * fixes to rsync restore (from Stephen Joyce)
+  * fixes to exponential backup expiry (from Alexander Moisseev)
+  * added template systemd files
+  * configure.pl adds a --config-only option for package builders (from Alexander Moisseev)
+
+ -- Raoul Bhatia <raobhati@cisco.com>  Sat, 25 Mar 2017 12:34:48 +0100
+
 backuppc (4.0.0) stable; urgency=medium
 
   * Initial release.
