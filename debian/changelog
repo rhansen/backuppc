@@ -1,3 +1,9 @@
+backuppc (4.1.1) stable; urgency=medium
+
+  * BackupPC 4.1.1 is a bug fix release.
+
+ -- Raoul Bhatia <raoul@bhatia.at>  Sat, 01 Apr 2017 15:52:30 +0200
+
 backuppc (4.1.0) stable; urgency=medium
 
   * BackupPC_migrateV3toV4 optionally allows old 3.x backups to be migrated to 4.x format, eliminating the hardlinks used by 3.x.
@@ -8,7 +14,7 @@ backuppc (4.1.0) stable; urgency=medium
   * added template systemd files
   * configure.pl adds a --config-only option for package builders (from Alexander Moisseev)
 
- -- Raoul Bhatia <raobhati@cisco.com>  Sat, 25 Mar 2017 12:34:48 +0100
+ -- Raoul Bhatia <raoul@bhatia.at>  Sat, 25 Mar 2017 12:34:48 +0100
 
 backuppc (4.0.0) stable; urgency=medium
 
