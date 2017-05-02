@@ -1,3 +1,9 @@
+backuppc (4.1.2) stable; urgency=medium
+
+  * BackupPC 4.1.2 is a bug fix release.
+
+ -- Raoul Bhatia <raoul@bhatia.at>  Tue, 01 May 2017 20:45:09 +0200
+
 backuppc (4.1.1) stable; urgency=medium
 
   * BackupPC 4.1.1 is a bug fix release.
