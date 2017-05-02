@@ -3,7 +3,7 @@ Maintainer: Jack <jack@k-net.pro>
 Section: utils
 Priority: optional
 Standards-Version: 3.9.6
-Build-Depends: debhelper (>= 9), backuppc-xs (>= 0.53), libtime-parsedate-perl, libxml-rss-perl
+Build-Depends: debhelper (>= 9), backuppc-xs (>= 0.53), libtime-parsedate-perl, libxml-rss-perl, libcgi-pm-perl
 
 Package: backuppc
 Architecture: amd64
