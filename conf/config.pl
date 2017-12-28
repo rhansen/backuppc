@@ -360,7 +360,7 @@ $Conf{CgiDir}      = '';
 # are really running as user $Conf{BackupPCUser}.  If this flag is set
 # and the effective user id (euid) differs from $Conf{BackupPCUser}
 # then both scripts exit with an error.  This catches cases where
-# BackupPC might be accidently started as root or the wrong user,
+# BackupPC might be accidentally started as root or the wrong user,
 # or if the CGI script is not installed correctly.
 #
 $Conf{BackupPCUserVerify} = 1;
@@ -831,7 +831,7 @@ $Conf{BackupZeroFilesIsFatal} = 1;
 $Conf{XferMethod} = 'smb';
 
 #
-# Level of verbosity in Xfer log files.  0 means be quiet, 1 will give
+# Level of verbosity in Xfer log files.  0 means be quiet, 1
 # will give one line per file, 2 will also show skipped files on
 # incrementals, higher values give more output.
 #
@@ -948,7 +948,7 @@ $Conf{SmbClientPath} = '';
 #
 $Conf{SmbClientFullCmd} = '$smbClientPath \\\\$host\\$shareName'
 	    . ' $I_option -U $userName -E -d 1'
-            . ' -c tarmode\\ full -Tc$X_option - $fileList';
+            . ' -c tarmode\\ full -mSMB3 -Tc$X_option - $fileList';
 
 #
 # Command to run smbclient for an incremental dump.
@@ -962,7 +962,7 @@ $Conf{SmbClientFullCmd} = '$smbClientPath \\\\$host\\$shareName'
 #
 $Conf{SmbClientIncrCmd} = '$smbClientPath \\\\$host\\$shareName'
 	    . ' $I_option -U $userName -E -d 1'
-	    . ' -c tarmode\\ full -TcN$X_option $timeStampFile - $fileList';
+	    . ' -c tarmode\\ full -mSMB3 -TcN$X_option $timeStampFile - $fileList';
 
 #
 # Command to run smbclient for a restore.
@@ -980,7 +980,7 @@ $Conf{SmbClientIncrCmd} = '$smbClientPath \\\\$host\\$shareName'
 #
 $Conf{SmbClientRestoreCmd} = '$smbClientPath \\\\$host\\$shareName'
             . ' $I_option -U $userName -E -d 1'
-            . ' -c tarmode\\ full -Tx -';
+            . ' -c tarmode\\ full -mSMB3 -Tx -';
 
 ###########################################################################
 # Tar Configuration
@@ -2030,7 +2030,7 @@ $Conf{RrdToolPath} = '';
 # Language to use.  See lib/BackupPC/Lang for the list of supported
 # languages, which include English (en), French (fr), Spanish (es),
 # German (de), Italian (it), Dutch (nl), Polish (pl), Portuguese
-# Brazilian (pt_br) and Chinese (zh_CH).
+# Brazilian (pt_br) and Chinese (zh_CN).
 #
 # Currently the Language setting applies to the CGI interface and email
 # messages sent to users.  Log files and other text are still in English.
@@ -2099,12 +2099,12 @@ $Conf{CgiNavBarLinks} = [
     },
     {
         link  => "https://backuppc.github.io/backuppc",
-        name  => "Github",           # displays literal "Github"
+        name  => "Homepage",         # displays literal "Homepage"
     },
 ];
 
 #
-# Hilight colors based on status that are used in the PC summary page.
+# Highlight colors based on status that are used in the PC summary page.
 #
 $Conf{CgiStatusHilightColor} = {
     Reason_backup_failed           => '#ffcccc',
@@ -2245,6 +2245,7 @@ $Conf{CgiUserConfigEdit} = {
         RestorePreUserCmd         => 0,
         RsyncArgs                 => 1,
         RsyncArgsExtra            => 1,
+        RsyncBackupPCPath         => 0,
         RsyncClientPath           => 0,
         RsyncdAuthRequired        => 1,
         RsyncdClientPort          => 1,
@@ -2256,6 +2257,7 @@ $Conf{CgiUserConfigEdit} = {
         RsyncSshArgs              => 1,
         SmbClientFullCmd          => 0,
         SmbClientIncrCmd          => 0,
+        SmbClientPath             => 0,
         SmbClientRestoreCmd       => 0,
         SmbShareName              => 1,
         SmbSharePasswd            => 1,

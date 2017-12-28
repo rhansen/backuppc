@@ -28,7 +28,7 @@
 #
 #========================================================================
 #
-# Version 4.1.3, released 21 May 2017.
+# Version 4.1.3, released 3 Jun 2017.
 #
 # See http://backuppc.sourceforge.net.
 #
@@ -581,14 +581,14 @@ sub getFTPArgs
 
     return {
         Host         => $t->{hostIP} || $t->{host},
-#        Firewall     => undef,                            # not used
-#        FirewallType => undef,                            # not used
-#        BlockSize    => $conf->{FtpBlockSize} || 10240,
-#        Port         => $conf->{FtpPort}      || 21,
-#        Timeout      => defined($conf->{FtpTimeout}) ? $conf->{FtpTimeout} : 120,
+        Firewall     => undef,                            # not used
+        FirewallType => undef,                            # not used
+        BlockSize    => $conf->{FtpBlockSize} || 10240,
+        Port         => $conf->{FtpPort}      || 21,
+        Timeout      => defined($conf->{FtpTimeout}) ? $conf->{FtpTimeout} : 120,
         Debug        => $t->{logLevel} >= 5 ? 1 : 0,
         Passive      => (defined($conf->{FtpPassive}) ? $conf->{FtpPassive} : 1),
-#        Hash         => undef,                            # do not touch
+        Hash         => undef,                            # do not touch
     };
 }
 
@@ -995,7 +995,7 @@ sub handleFile
     if ( !*FTP || $@ || $errs ) {
         $t->logFileAction( "fail", $f->{name}, $f );
         $t->{xferBadFileCnt}++;
-        $stats->{errCnt} += scalar @$errs;
+        $stats->{errCnt} += ref($errs) eq 'ARRAY' ? scalar(@$errs) : 1;
         return;
     }
 
