@@ -1,3 +1,18 @@
+backuppc (4.2.1) stable; urgency=medium
+  * Merged pull request #195.
+  * Added new config variable $Conf{CgiUserDeleteBackupEnable} that
+    sets whether users and admins can delete backups via the CGI
+    interface. The default value is 0, which means it's disabled
+    for regular users but available for admins.
+  * Fixed delete backup bug in bin/BackupPC_Admin_SCGI reported by
+    Julian Zielke in issue #193.
+  * Added check to dirCacheFlush() in bin/BackupPC_tarExtract to skip files
+    that don't have attributes; reported by Tarak Patel.
+  * Removed extraneous duplicate variable assignment in lib/BackupPC/CGI/GeneralInfo.pm,
+    from @moisseev (#195).
+
+ -- Raoul Bhatia <raoul@bhatia.at>  Sat, 12 May 2018 17:32:00 +0200
+
 backuppc (4.2.0) stable; urgency=medium
 
   * Backups can now be deleted via the CGI interface, written by @moisseev (#160).
