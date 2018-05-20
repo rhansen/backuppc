@@ -10,7 +10,7 @@
 #   Craig Barratt  <cbarratt@users.sourceforge.net>
 #
 # COPYRIGHT
-#   Copyright (C) 2004-2017  Craig Barratt
+#   Copyright (C) 2004-2018  Craig Barratt
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 #
 #========================================================================
 #
-# Version 4.1.3, released 3 Jun 2017.
+# Version 4.2.0, released 8 Apr 2018.
 #
 # See http://backuppc.sourceforge.net.
 #
@@ -309,6 +309,7 @@ use vars qw(%ConfigMeta);
     ######################################################################
     NmbLookupCmd 	=> "string",
     NmbLookupFindHostCmd => "string",
+    ClientComment       => "string",
 
     FixedIPNetBiosNameCheck => "boolean",
     PingCmd	 	=> "string",
@@ -407,6 +408,7 @@ use vars qw(%ConfigMeta);
         },
     CgiImageDirURL 	=> "string",
     CgiCSSFile	 	=> "string",
+    CgiUserDeleteBackupEnable => "integer",
     CgiUserConfigEditEnable => "boolean",
     CgiUserConfigEdit   => {
 	    type => "hash",
@@ -482,6 +484,7 @@ use vars qw(%ConfigMeta);
                 MaxOldPerPCLogFiles       => "boolean",
                 CompressLevel             => "boolean",
                 ClientNameAlias           => "boolean",
+                ClientComment             => "boolean",
                 DumpPreUserCmd            => "boolean",
                 DumpPostUserCmd           => "boolean",
                 RestorePreUserCmd         => "boolean",

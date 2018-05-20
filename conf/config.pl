@@ -1282,6 +1282,7 @@ $Conf{RsyncArgs} = [
 #                                 $Conf{ClientNameAlias} is set)
 #        $hostIP       IP address of host
 #        $confDir      configuration directory path
+#        $shareName    share name being backed up
 #
 # This allows settings of the form:
 #
@@ -1821,6 +1822,12 @@ $Conf{UserCmdCheckStatus} = 0;
 #
 $Conf{ClientNameAlias} = undef;
 
+#
+# A user-settable comment string that is displayed in this host's status.
+# The value is otherwise ignored by BackupPC.
+#
+$Conf{ClientComment} = undef;
+
 ###########################################################################
 # Email reminders, status and messages
 # (can be overridden in the per-PC config.pl)
@@ -2163,6 +2170,16 @@ $Conf{CgiImageDirURL} = '';
 $Conf{CgiCSSFile} = 'BackupPC_stnd.css';
 
 #
+# Whether the user is allowed to delete backups. If set to a positive
+# value, the user will have a delete button for each backup on any
+# host they have permission to access.  If set to 0, only
+# administrators have access to the backup delete feature.
+# If set to a negative value, even admins will not be able
+# to use the delete feature.
+#
+$Conf{CgiUserDeleteBackupEnable} = 0;
+
+#
 # Whether the user is allowed to edit their per-PC config.
 #
 $Conf{CgiUserConfigEditEnable} = 1;
@@ -2196,6 +2213,7 @@ $Conf{CgiUserConfigEdit} = {
         BlackoutPeriods           => 1,
         ClientCharset             => 1,
         ClientCharsetLegacy       => 1,
+        ClientComment             => 1,
         ClientNameAlias           => 1,
         ClientTimeout             => 1,
         CompressLevel             => 1,
