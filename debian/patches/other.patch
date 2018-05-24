@@ -10258,39 +10258,3 @@ Last-Update: <YYYY-MM-DD>
 +You should have received a copy of the \s-1GNU\s0 General Public License in the
 +\&\s-1LICENSE\s0 file along with this program; if not, write to the Free Software
 +Foundation, Inc., 59 Temple Place, Suite 330, Boston, \s-1MA 02111\-1307 USA.\s0
---- /dev/null
-+++ backuppc-4.0.0~alpha3/httpd/BackupPC.conf
-@@ -0,0 +1,33 @@
-+#
-+# DESCRIPTION
-+#
-+#   This file controls access and configuration for the BackupPC CGI
-+#   interface.
-+#
-+# Distributed with BackupPC version 3.1.1, released 22 Dec 2008.
-+
-+<Directory      /usr/share/backuppc/cgi-bin >
-+
-+#
-+# This section tells apache which machines can access the interface.
-+# You can change the allow line to allow access from your local
-+# network, or comment out this region to allow access from all
-+# machines.
-+#
-+order deny,allow
-+deny from all
-+allow from 127.0.0.1
-+
-+#
-+# You can change the authorization method to LDAP or another method
-+# besides htaccess here if you are so inclined.
-+#
-+AuthType Basic
-+AuthUserFile /etc/backuppc/BackupPC.users
-+AuthName "BackupPC Community Edition Administrative Interface"
-+require valid-user
-+
-+</Directory>
-+
-+Alias           /backuppc/image         /usr/share/backuppc/image
-+ScriptAlias     /BackupPC_Admin         /usr/share/backuppc/cgi-bin/BackupPC_Admin
