@@ -1,3 +1,10 @@
+backuppc (4.3.0-1) stable; urgency=medium
+
+  * New release BackupPC 4.3.0.
+  * Refresh patches.
+
+ -- Raoul Bhatia <raoul@bhatia.at>  Sun, 20 Jan 2019 00:10:45 +0100
+
 backuppc (4.2.1-1) stable; urgency=medium
 
   * Cleanup patch files.

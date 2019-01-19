@@ -61,7 +61,7 @@ install: build
 
 	# Add here commands to install the package into debian/backuppc.
 	chmod 755 ./makeDist
-	./makeDist --releasedate "`date +'%d %b %Y'`" --version "4.2.1"
+	./makeDist --releasedate "2018-11-26" --version "4.3.0"
 
 	mkdir buildroot
 	tar -xzf dist/*tar.gz --directory buildroot/ --strip-components=1
@@ -106,6 +106,8 @@ install: build
 	-rm -rf debian/backuppc/var/lib/backuppc/conf/
 	mkdir -p debian/backuppc/usr/share/backuppc/cgi-bin
 	(cd debian/backuppc/usr/share/backuppc/cgi-bin; ln -s ../image; ln -s /usr/lib/backuppc/cgi-bin/index.cgi )
+
+        # TODO FIXME move to ./debian/patches/
 	patch --no-backup-if-mismatch -p0 < debian/config.pl.diff
 	mkdir -p debian/backuppc/usr/share/backuppc/conf/
 	install --mode=644 debian/backuppc/etc/backuppc/config.pl debian/backuppc/usr/share/backuppc/conf/
