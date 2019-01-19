@@ -1,6 +1,8 @@
 backuppc (4.2.1-1) stable; urgency=medium
 
   * Cleanup patch files.
+  * Depend on libbackuppc-xs-perl
+    (new Debian package name for backuppc-xs).
 
  -- Raoul Bhatia <raoul@bhatia.at>  Sat, 19 Jan 2019 22:41:35 +0100
 
