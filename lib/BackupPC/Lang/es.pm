@@ -94,6 +94,9 @@ $Lang{BackupPC_Server_Status_General_Info}= <<EOF;
         <li>El sistema de archivos estaba recientemente al \$Info{DUlastValue}%
             (\$DUlastTime), el m&aacute;ximo de hoy es \$Info{DUDailyMax}% (\$DUmaxTime)
             y el m&aacute;ximo de ayer era \$Info{DUDailyMaxPrev}%.
+        <li>Inode El sistema de archivos estaba recientemente al \$Info{DUInodelastValue}%
+            (\$DUlastTime), el m&aacute;ximo de hoy es \$Info{DUInodeDailyMax}% (\$DUInodemaxTime)
+            y el m&aacute;ximo de ayer era \$Info{DUInodeDailyMaxPrev}%.
     </ul>
 </ul>
 EOF
@@ -104,7 +107,7 @@ $Lang{BackupPC_Server_Status} = <<EOF;
 <p>
 \${h2("Trabajos en Ejecuci&oacute;n")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td> Host </td>
     <td> Tipo </td>
     <td> Usuario </td>
@@ -123,7 +126,7 @@ $Lang{BackupPC_Server_Status} = <<EOF;
 
 \${h2("Fallas que Requieren Atenci&oacute;n")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td align="center"> Host </td>
     <td align="center"> Tipo </td>
     <td align="center"> Usuario </td>
@@ -147,6 +150,9 @@ $Lang{BackupPC_Summary}=<<EOF;
 <li>El sistema de archivos estaba recientemente al \$Info{DUlastValue}%
     (\$DUlastTime), el m&aacute;ximo de hoy es \$Info{DUDailyMax}% (\$DUmaxTime)
     y el m&aacute;ximo de ayer era \$Info{DUDailyMaxPrev}%.
+<li>Inode El sistema de archivos estaba recientemente al \$Info{DUInodelastValue}%
+    (\$DUlastTime), el m&aacute;ximo de hoy es \$Info{DUInodeDailyMax}% (\$DUInodemaxTime)
+    y el m&aacute;ximo de ayer era \$Info{DUInodeDailyMaxPrev}%.
 </ul>
 </p>
 
@@ -184,6 +190,7 @@ Hay \$hostCntNone hosts sin copias de seguridad.
 <table class="sortable" id="host_summary_nobackups" border cellpadding="3" cellspacing="1">
 <tr class="tableheader"> <td> Host </td>
     <td align="center"> Usuario </td>
+    <td align="center"> Comentario </td>
     <td align="center"> # Completo </td>
     <td align="center"> Completo Antiguedad (d&iacute;as) </td>
     <td align="center"> Completo Tama&ntilde;o (GB) </td>
@@ -378,8 +385,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 <p>
 Las siguientes solicitudes de usuarios est&aacute;n actualmente en cola:
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> Host </td>
+    <td> Action </td>
     <td> Hora Solicitud </td>
     <td> Usuario </td></tr>
 \$strUser
@@ -389,8 +397,9 @@ Las siguientes solicitudes de usuarios est&aacute;n actualmente en cola:
 <p>
 Las siguientes solicitudes en segundo plano est&aacute;n actualmente en cola:
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> Host </td>
+    <td> Action </td>
     <td> Hora Solicitud </td>
     <td> Usuario </td></tr>
 \$strBg
@@ -399,8 +408,9 @@ Las siguientes solicitudes en segundo plano est&aacute;n actualmente en cola:
 <p>
 Los siguientes comandos est&aacute;n actualmente en cola:
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> Host </td>
+    <td> Action </td>
     <td> Hora Solicitud </td>
     <td> Usuario </td>
     <td> Comando </td></tr>
@@ -429,7 +439,7 @@ $Lang{BackupPC__Log_File_History} = "BackupPC: Historial de Archivos de Eventos"
 $Lang{Log_File_History__hdr} = <<EOF;
 \${h1("Historial de Archivos de Eventos \$hdr")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> Archivo </td>
     <td align="center"> Tama&ntilde;o </td>
     <td align="center"> Hora Modificaci&oacute;n </td></tr>
@@ -441,7 +451,7 @@ EOF
 $Lang{Recent_Email_Summary} = <<EOF;
 \${h1("Resumen de Mensajes Recientes (Orden de tiempo inverso)")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> Destinatario </td>
     <td align="center"> Host </td>
     <td align="center"> Hora </td>
@@ -705,7 +715,7 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 <p>
 Haga click en el n&uacute;mero de copia de seguridad para revisar y restaurar archivos.
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td align="center"> Copia N&deg; </td>
     <td align="center"> Tipo </td>
     <td align="center"> Completo </td>
@@ -723,7 +733,7 @@ Haga click en el n&uacute;mero de copia de seguridad para revisar y restaurar ar
 \$restoreStr
 </p>
 \${h2("Resumen de Errores de Transferencia")}
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> Copia N&deg; </td>
     <td align="center"> Tipo </td>
     <td align="center"> Ver </td>
@@ -742,13 +752,13 @@ aquellos que se han a&ntilde;adido al lote.
 Los archivos vac&iacute;os y los errores SMB no cuentan en las cifras de reutilizados
 ni en la de nuevos.
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td colspan="2" bgcolor="#ffffff"></td>
     <td align="center" colspan="3"> Totales </td>
     <td align="center" colspan="2"> Archivos Existentes </td>
     <td align="center" colspan="2"> Archivos Nuevos </td>
 </tr>
-<tr class="tableheader">
+<tr class="tableheader sortheader">
     <td align="center"> Copia N&deg; </td>
     <td align="center"> Tipo </td>
     <td align="center"> N&deg; Archivos </td>
@@ -767,12 +777,12 @@ ni en la de nuevos.
 Efectividad de compresi&oacute;n para los archivos ya existentes en el lote y los
 archivos nuevos comprimidos.
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td colspan="3" bgcolor="#ffffff"></td>
     <td align="center" colspan="3"> Archivos Existentes </td>
     <td align="center" colspan="3"> Archivos Nuevos </td>
 </tr>
-<tr class="tableheader"><td align="center"> Copia N&deg; </td>
+<tr class="tableheader sortheader"><td align="center"> Copia N&deg; </td>
     <td align="center"> Tipo </td>
     <td align="center"> Nivel Comp </td>
     <td align="center"> Tama&ntilde;o/MB </td>
@@ -1218,7 +1228,7 @@ $Lang{Restore_Summary} = <<EOF;
 \${h2("Resumen de Restauraci&oacute;n")}
 <p>
 Haga click en el n&uacute;mero de restauraci&oacute;n para ver sus detalles.
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> Restauraci&oacute;n N&deg; </td>
     <td align="center"> Resultado </td>
     <td align="right"> Fecha Inicio</td>
@@ -1323,7 +1333,7 @@ que est&eacute; en la oficina.
 
 Saludos:
 Agente BackupPC
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 # No recent backup
@@ -1354,7 +1364,7 @@ y archivos adjuntos) no pueden ser restaurados si su disco se aver&iacute;a.
 
 Saludos:
 Agente BackupPC
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 # Old Outlook files
@@ -1409,7 +1419,7 @@ para verificar el estado del proceso de copia de seguridad. Deber&iacute;a lleva
 
 Saludos:
 Agente BackupPC
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 $Lang{howLong_not_been_backed_up} = "no se le ha realizado una copia de seguridad con &eacute;xito";
@@ -1428,6 +1438,7 @@ Velocidad MB/sec: \$fullRate;
 #Incrementales: \$incrCnt;
 Incrementales Antig/D&iacute;as: \$incrAge;
 Estado: \$host_state;
+Discapacitado: \$host_disabled;
 Ultimo Intento: \$host_last_attempt;
 EOF
 

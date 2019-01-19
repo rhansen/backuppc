@@ -29,9 +29,9 @@
 #   Craig Barratt  <cbarratt@users.sourceforge.net>
 #
 # COPYRIGHT
-#   Copyright (C) 2001-2013  Craig Barratt
+#   Copyright (C) 2001-2018  Craig Barratt
 #
-#   See http://backuppc.sourceforge.net.
+#   See https://backuppc.github.io/backuppc
 #
 #========================================================================
 
@@ -272,6 +272,19 @@ $Conf{DfPath} = '';
 $Conf{DfCmd} = '$dfPath $topDir';
 
 #
+# Command to run df to get inode % usage.  The following variables are substituted
+# at run-time:
+#
+#   $dfPath      path to df ($Conf{DfPath})
+#   $topDir      top-level BackupPC data directory
+#
+# Note: all Cmds are executed directly without a shell, so the prog name
+# needs to be a full path and you can't include shell syntax like
+# redirection and pipes; put that in a script if you need it.
+#
+$Conf{DfInodeUsageCmd} = '$dfPath -i $topDir';
+
+#
 # Full path to various commands for archiving
 #
 $Conf{SplitPath} = '';
@@ -282,7 +295,7 @@ $Conf{Bzip2Path} = '';
 
 #
 # Maximum threshold for disk utilization on the __TOPDIR__ filesystem.
-# If the output from $Conf{DfPath} reports a percentage larger than
+# If the output from $Conf{DfCmd} reports a percentage larger than
 # this number then no new regularly scheduled backups will be run.
 # However, user requested backups (which are usually incremental and
 # tend to be small) are still performed, independent of disk usage.
@@ -290,6 +303,17 @@ $Conf{Bzip2Path} = '';
 # usage exceeds this number.
 #
 $Conf{DfMaxUsagePct} = 95;
+
+#
+# Maximum threshold for inode utilization on the __TOPDIR__ filesystem.
+# If the output from $Conf{DfInodeUsageCmd} reports a percentage larger
+# than this number then no new regularly scheduled backups will be run.
+# However, user requested backups (which are usually incremental and
+# tend to be small) are still performed, independent of disk usage.
+# Also, currently running backups will not be terminated when the disk
+# inode usage exceeds this number.
+#
+$Conf{DfMaxInodeUsagePct} = 95;
 
 #
 # List of DHCP address ranges we search looking for PCs to backup.
@@ -1864,6 +1888,11 @@ $Conf{EMailFromUserName} = '';
 $Conf{EMailAdminUserName} = '';
 
 #
+# Subject for admin emails.  If empty, defaults to pre-4.2.2 values.
+#
+$Conf{EMailAdminSubject} = '';
+
+#
 # Destination domain name for email sent to users.  By default
 # this is empty, meaning email is sent to plain, unqualified
 # addresses.  Otherwise, set it to the destination domain, eg:
@@ -1971,19 +2000,19 @@ EOF
 # Administrative users have full access to all hosts, plus overall
 # status and log information.
 #
-# The administrative users are the union of the unix/linux group
-# $Conf{CgiAdminUserGroup} and the manual list of users, separated
-# by spaces, in $Conf{CgiAdminUsers}. If you don't want a group or
-# manual list of users set the corresponding configuration setting
-# to undef or an empty string.
+# The administrative users are the union of the list of unix/linux groups,
+# separated by spaces, in $Conf{CgiAdminUserGroup} and the list of users,
+# separated by spaces, in $Conf{CgiAdminUsers}. If you don't want a list of
+# groups or users set the corresponding configuration setting to undef or an
+# empty string.
 #
 # If you want every user to have admin privileges (careful!), set
 # $Conf{CgiAdminUsers} = '*'.
 #
 # Examples:
-#    $Conf{CgiAdminUserGroup} = 'admin';
+#    $Conf{CgiAdminUserGroup} = 'admin wheel';
 #    $Conf{CgiAdminUsers}     = 'craig celia';
-#    --> administrative users are the union of group admin, plus
+#    --> administrative users are the union of groups admin and wheel, plus
 #      craig and celia.
 #
 #    $Conf{CgiAdminUserGroup} = '';
@@ -2073,7 +2102,7 @@ $Conf{CgiUserUrlCreate}     = 'mailto:%s';
 # dates (MM/DD), a value of 2 uses full YYYY-MM-DD format, and zero
 # for international dates (DD/MM).
 #
-$Conf{CgiDateFormatMMDD} = 1;
+$Conf{CgiDateFormatMMDD} = 2;
 
 #
 # If set, the complete list of hosts appears in the left navigation
@@ -2221,7 +2250,8 @@ $Conf{CgiUserConfigEdit} = {
         DumpPostUserCmd           => 0,
         DumpPreShareCmd           => 0,
         DumpPreUserCmd            => 0,
-        EMailAdminUserName        => 1,
+        EMailAdminSubject         => 0,
+        EMailAdminUserName        => 0,
         EMailFromUserName         => 1,
         EMailHeaders              => 1,
         EMailNoBackupEverMesg     => 1,
@@ -2265,7 +2295,6 @@ $Conf{CgiUserConfigEdit} = {
         RsyncArgsExtra            => 1,
         RsyncBackupPCPath         => 0,
         RsyncClientPath           => 0,
-        RsyncdAuthRequired        => 1,
         RsyncdClientPort          => 1,
         RsyncdPasswd              => 1,
         RsyncdUserName            => 1,

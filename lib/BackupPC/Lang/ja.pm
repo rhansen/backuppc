@@ -96,6 +96,9 @@ $Lang{BackupPC_Server_Status_General_Info}= <<EOF;
         <li>プールファイルシステムは \$Info{DUlastValue}%
             (\$DUlastTime 現在)、今日の最大値は \$Info{DUDailyMax}% (\$DUmaxTime)、
             昨日の最大値は \$Info{DUDailyMaxPrev}%。
+        <li>Inode プールファイルシステムは \$Info{DUInodelastValue}%
+            (\$DUlastTime 現在)、今日の最大値は \$Info{DUInodeDailyMax}% (\$DUInodemaxTime)、
+            昨日の最大値は \$Info{DUInodeDailyMaxPrev}%。
     </ul>
 </ul>
 EOF
@@ -106,7 +109,7 @@ $Lang{BackupPC_Server_Status} = <<EOF;
 <p>
 \${h2("現在実行中のジョブ")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td> ホスト </td>
     <td> 種別 </td>
     <td> ユーザ </td>
@@ -125,7 +128,7 @@ $Lang{BackupPC_Server_Status} = <<EOF;
 
 \${h2("注意する必要がある失敗")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td align="center"> ホスト </td>
     <td align="center"> 種別 </td>
     <td align="center"> ユーザ </td>
@@ -149,6 +152,9 @@ $Lang{BackupPC_Summary} = <<EOF;
 <li>プールファイルシステムは \$Info{DUlastValue}%
     (\$DUlastTime 現在)、今日の最大値は \$Info{DUDailyMax}% (\$DUmaxTime)、
         昨日の最大値は \$Info{DUDailyMaxPrev}%。
+<li>Inode プールファイルシステムは \$Info{DUInodelastValue}%
+    (\$DUlastTime 現在)、今日の最大値は \$Info{DUInodeDailyMax}% (\$DUInodemaxTime)、
+    昨日の最大値は \$Info{DUInodeDailyMaxPrev}%。
 </ul>
 </p>
 
@@ -185,7 +191,8 @@ $Lang{BackupPC_Summary} = <<EOF;
 <table class="sortable" id="host_summary_nobackups" border cellpadding="3" cellspacing="1">
 <tr class="tableheader"><td> ホスト </td>
     <td align="center"> ユーザ </td>
-    <td align="center"> #フル </td>
+    <td align="center"> コメント </td>
+    <td align="center"> フル </td>
     <td align="center"> フル世代(日) </td>
     <td align="center"> フルサイズ(GiB) </td>
     <td align="center"> 速度(MB/s) </td>
@@ -376,8 +383,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 <p>
 現在キューイングされているユーザ要求は次のとおりです。
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> ホスト </td>
+    <td> Action </td>
     <td> 要求時間 </td>
     <td> ユーザ </td></tr>
 \$strUser
@@ -386,8 +394,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 \${h2("バックグラウンドキューサマリ")}
 <p>
 現在キューイングされているバックグラウンド要求は次のとおりです。</p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> ホスト </td>
+    <td> Action </td>
     <td> 要求時間 </td>
     <td> ユーザ </td></tr>
 \$strBg
@@ -396,8 +405,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 <p>
 現在キューイングされているコマンド要求は次のとおりです。
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> ホスト </td>
+    <td> Action </td>
     <td> 要求時間 </td>
     <td> ユーザ </td>
     <td> コマンド </td></tr>
@@ -426,7 +436,7 @@ $Lang{BackupPC__Log_File_History} = "BackupPC: ログファイルの履歴";
 $Lang{Log_File_History__hdr} = <<EOF;
 \${h1("ログファイル履歴 \$hdr")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> ファイル </td>
     <td align="center"> サイズ </td>
     <td align="center"> 更新時間 </td></tr>
@@ -438,7 +448,7 @@ EOF
 $Lang{Recent_Email_Summary} = <<EOF;
 \${h1("最近のメールサマリ(日時降順)")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> 受信者 </td>
     <td align="center"> ホスト </td>
     <td align="center"> 日時 </td>
@@ -696,7 +706,7 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 <p>
 閲覧・バックアップファイルのリストアを行いたいバックアップ番号をクリックしてください。
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td align="center"> バックアップ番号 </td>
     <td align="center"> 種別 </td>
     <td align="center"> フィルド </td>
@@ -714,7 +724,7 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 \$restoreStr
 </p>
 \${h2("転送エラーサマリ")}
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> バックアップ番号 </td>
     <td align="center"> 種別 </td>
     <td align="center"> ビュー </td>
@@ -731,13 +741,13 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 存在するファイルはプール内にすでにあります。次の新しいファイルはプールへ追加されます。
 空ファイルとSMBエラーは再利用にはカウントされません。
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td colspan="2" bgcolor="#ffffff"></td>
     <td align="center" colspan="3"> トータル </td>
     <td align="center" colspan="2"> 既存ファイル </td>
     <td align="center" colspan="2"> 新ファイル </td>
 </tr>
-<tr class="tableheader">
+<tr class="tableheader sortheader">
     <td align="center"> バックアップ番号 </td>
     <td align="center"> 種別 </td>
     <td align="center"> #ファイル </td>
@@ -755,12 +765,12 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 <p>
 すでにプールに入っているものと新しく圧縮されたファイルの圧縮パフォーマンス
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td colspan="3" bgcolor="#ffffff"></td>
     <td align="center" colspan="3"> 既存ファイル </td>
     <td align="center" colspan="3"> 新ファイル </td>
 </tr>
-<tr class="tableheader"><td align="center"> バックアップ番号 </td>
+<tr class="tableheader sortheader"><td align="center"> バックアップ番号 </td>
     <td align="center"> 種別 </td>
     <td align="center"> 圧縮レベル </td>
     <td align="center"> サイズ(MB) </td>
@@ -1201,7 +1211,7 @@ $Lang{Restore_Summary} = <<EOF;
 \${h2("リストアサマリ")}
 <p>
 詳細を閲覧したいリストア番号をクリックしてください。
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> リストア番号 </td>
     <td align="center"> 結果 </td>
     <td align="right"> 開始日時</td>
@@ -1307,7 +1317,7 @@ next time you are in the office.
 
 Regards,
 BackupPC Genie
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 # No recent backup
@@ -1336,7 +1346,7 @@ attachments) cannot be restored if your PC disk crashes.
 
 Regards,
 BackupPC Genie
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 # Old Outlook files
@@ -1367,7 +1377,7 @@ complete.
 
 Regards,
 BackupPC Genie
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 $Lang{howLong_not_been_backed_up} = "not been backed up successfully";
@@ -1386,6 +1396,7 @@ Speed MB/sec: \$fullRate;
 Incr Count: \$incrCnt;
 Incr Age/Days: \$incrAge;
 State: \$host_state;
+Disabled: \$host_disabled;
 Last Attempt: \$host_last_attempt;
 EOF
 

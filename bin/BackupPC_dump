@@ -87,7 +87,7 @@
 #
 #========================================================================
 #
-# Version 4.2.0, released 18 Feb 2018.
+# Version 4.2.2, released 27 Oct 2018.
 #
 # See http://backuppc.sourceforge.net.
 #
@@ -195,7 +195,7 @@ if ( defined(my $error = $bpc->ConfigRead($client)) ) {
 }
 %Conf = $bpc->Conf();
 BackupPC::XS::Lib::logLevelSet($Conf{XferLogLevel});
-flushLibMessages();
+
 #
 # Write new-style attrib files (<= 4.0.0beta3 uses old-style), which are 0-length
 # files with the digest encoded in the file name (eg: attrib_md5HexDigest). We
@@ -215,12 +215,6 @@ $SIG{TSTP} = \&catch_signal;
 $SIG{TTIN} = \&catch_signal;
 my $Pid = $$;
 
-#
-# Make sure we eventually timeout if there is no activity from
-# the data transport program.
-#
-alarm($Conf{ClientTimeout});
-
 mkpath($Dir, 0, 0777) if ( !-d $Dir );
 
 my($LogFd, $LogPath) = $bpc->openPCLogFile($client);
@@ -229,6 +223,7 @@ if ( !defined($LogFd) ) {
     exit(1);
 }
 select($LogFd); $| = 1; select(STDOUT);
+flushLibMessages();
 
 #
 # For the -e option we just expire backups and quit
@@ -883,6 +878,12 @@ $NeedPostCmd = 1;
 #
 my $shareDuplicate = {};
 for my $shareName ( @$ShareNames ) {
+    #
+    # Make sure we eventually timeout if there is no activity from
+    # the data transport program.
+    #
+    alarm($Conf{ClientTimeout});
+
     local(*RH, *WH);
 
     #
@@ -2187,7 +2188,7 @@ sub flushLibMessages()
         foreach my $m ( @$msg ) {
             $XferLOG->write(\$m);
         }
-    } else {
+    } elsif ( defined($LogFd) ) {
         foreach my $m ( @$msg ) {
             print($LogFd $m);
         }

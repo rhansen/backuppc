@@ -93,6 +93,9 @@ $Lang{BackupPC_Server_Status_General_Info}= <<EOF;
         <li>备份池文件系统磁盘空间占用率是 \$Info{DUlastValue}%
             （统计于 \$DUlastTime），今天的最大占用率是 \$Info{DUDailyMax}%（统计于 \$DUmaxTime），
             昨天的最大占用率是 \$Info{DUDailyMaxPrev}%。
+        <li>Inode 备份池文件系统磁盘空间占用率是 \$Info{DUInodelastValue}%
+            （统计于 \$DUlastTime），今天的最大占用率是 \$Info{DUInodeDailyMax}%（统计于 \$DUInodemaxTime），
+            昨天的最大占用率是 \$Info{DUInodeDailyMaxPrev}%。
     </ul>
 </ul>
 EOF
@@ -103,7 +106,7 @@ $Lang{BackupPC_Server_Status} = <<EOF;
 <p>
 \${h2("正在运行的任务")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td> 客户机 </td>
     <td> 类型 </td>
     <td> 用户 </td>
@@ -122,7 +125,7 @@ $Lang{BackupPC_Server_Status} = <<EOF;
 
 \${h2("需要关注的错误")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td align="center"> 客户机 </td>
     <td align="center"> 类型 </td>
     <td align="center"> 用户 </td>
@@ -146,6 +149,9 @@ $Lang{BackupPC_Summary} = <<EOF;
 <li>备份池文件系统磁盘空间占用率是 \$Info{DUlastValue}%
     （统计于 \$DUlastTime），今天的最大占用率是 \$Info{DUDailyMax}%（统计于 \$DUmaxTime），
     昨天的最大占用率是 \$Info{DUDailyMaxPrev}%。
+<li>Inode 备份池文件系统磁盘空间占用率是 \$Info{DUInodelastValue}%
+    （统计于 \$DUlastTime），今天的最大占用率是 \$Info{DUInodeDailyMax}%（统计于 \$DUInodemaxTime），
+    昨天的最大占用率是 \$Info{DUInodeDailyMaxPrev}%。
 </ul>
 </p>
 
@@ -182,6 +188,7 @@ $Lang{BackupPC_Summary} = <<EOF;
 <table class="sortable" id="host_summary_nobackups" border cellpadding="3" cellspacing="1">
 <tr class="tableheader"><td> 客户机 </td>
     <td align="center"> 用户 </td>
+    <td align="center"> 评论 </td>
     <td align="center"> 完全备份个数 </td>
     <td align="center"> 最后一次完全备份 (天前) </td>
     <td align="center"> 完全备份大小 (GiB) </td>
@@ -376,8 +383,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 <p>
 下列用户请求排在队列中：
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> 客户机 </td>
+    <td> Action </td>
     <td> 请求时间 </td>
     <td> 用户 </td></tr>
 \$strUser
@@ -387,8 +395,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 <p>
 下列后台请求排在队列中：
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> 客户机 </td>
+    <td> Action </td>
     <td> 请求时间 </td>
     <td> 用户 </td></tr>
 \$strBg
@@ -397,8 +406,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 <p>
 下列命令请求排在队列中：
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> 客户机 </td>
+    <td> Action </td>
     <td> 请求时间 </td>
     <td> 用户 </td>
     <td> 命令 </td></tr>
@@ -427,7 +437,7 @@ $Lang{BackupPC__Log_File_History} = "BackupPC: 日志文件历史";
 $Lang{Log_File_History__hdr} = <<EOF;
 \${h1("日志文件历史 \$hdr")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> 文件 </td>
     <td align="center"> 大小 </td>
     <td align="center"> 修改时间 </td></tr>
@@ -439,7 +449,7 @@ EOF
 $Lang{Recent_Email_Summary} = <<EOF;
 \${h1("最近电子邮件报告（最新排前）")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> 收信人 </td>
     <td align="center"> 客户机 </td>
     <td align="center"> 时间 </td>
@@ -690,7 +700,7 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 <p>
 点击备份序列号浏览和恢复文件。
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td align="center"> 备份序列号＃ </td>
     <td align="center"> 类型 </td>
     <td align="center"> 完整 </td>
@@ -708,7 +718,7 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 \$restoreStr
 </p>
 \${h2("传输错误报告")}
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> 备份序列号＃ </td>
     <td align="center"> 类型 </td>
     <td align="center"> 查看 </td>
@@ -725,13 +735,13 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 "原有文件"是指原先已存在备份池中的文件；"新增文件"是指备份新写入池中的文件。
 空文件不被统计在内。
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td colspan="2" bgcolor="#ffffff"></td>
     <td align="center" colspan="3"> 合计 </td>
     <td align="center" colspan="2"> 原有文件 </td>
     <td align="center" colspan="2"> 新增文件 </td>
 </tr>
-<tr class="tableheader">
+<tr class="tableheader sortheader">
     <td align="center"> 备份序列号＃ </td>
     <td align="center"> 类型 </td>
     <td align="center"> 文件数目 </td>
@@ -749,12 +759,12 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 <p>
 备份池中原有文件和新增文件的压缩性能报告。
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td colspan="3" bgcolor="#ffffff"></td>
     <td align="center" colspan="3"> 原有文件 </td>
     <td align="center" colspan="3"> 新增文件 </td>
 </tr>
-<tr class="tableheader"><td align="center"> 备份序列号＃ </td>
+<tr class="tableheader sortheader"><td align="center"> 备份序列号＃ </td>
     <td align="center"> 类型 </td>
     <td align="center"> 压缩级别 </td>
     <td align="center"> 压缩前(MB) </td>
@@ -1189,7 +1199,7 @@ $Lang{Restore_Summary} = <<EOF;
 \${h2("恢复报告")}
 <p>
 点击恢复序列号获取详情。
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> 恢复序列号 </td>
     <td align="center"> 结果 </td>
     <td align="right"> 开始时间 </td>
@@ -1292,7 +1302,7 @@ $headers
 此致敬礼，
 
 BackupPC Genie
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 # No recent backup
@@ -1318,7 +1328,7 @@ $headers
 此致敬礼，
 
 BackupPC Genie
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 # Old Outlook files
@@ -1351,7 +1361,7 @@ $headers
 此致敬礼，
 
 BackupPC Genie
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 $Lang{howLong_not_been_backed_up} = "还从未被成功备份过";
@@ -1370,6 +1380,7 @@ $Lang{RSS_Host_Summary}    = <<EOF;
 增量备份个数：\$incrCnt;
 最后一次增量备份 (天前)：\$incrAge;
 当前状态：\$host_state;
+残: \$host_disabled;
 最后一次备份结果：\$host_last_attempt;
 EOF
 

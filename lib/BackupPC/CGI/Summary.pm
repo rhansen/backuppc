@@ -27,7 +27,7 @@
 #
 #========================================================================
 #
-# Version 4.2.0, released 18 Feb 2018.
+# Version 4.2.2, released 3 Nov 2018.
 #
 # See http://backuppc.sourceforge.net.
 #
@@ -70,7 +70,7 @@ sub action
                     $fullDur  = $Backups[$i]{endTime} - $Backups[$i]{startTime};
                 }
                 $fullSizeTot += $Backups[$i]{size} / (1024 * 1024);
-            } else {
+            } elsif ( $Backups[$i]{type} eq "incr" ) {
                 $incrCnt++;
                 if ( $incrAge < 0 || $Backups[$i]{startTime} > $incrAge ) {
                     $incrAge = $Backups[$i]{startTime};
@@ -162,8 +162,9 @@ EOF
     $fullSizeTot = sprintf("%.2f", $fullSizeTot / 1024);
     $incrSizeTot = sprintf("%.2f", $incrSizeTot / 1024);
     my $now      = timeStamp2(time);
-    my $DUlastTime   = timeStamp2($Info{DUlastValueTime});
-    my $DUmaxTime    = timeStamp2($Info{DUDailyMaxTime});
+    my $DUlastTime     = timeStamp2($Info{DUlastValueTime});
+    my $DUmaxTime      = timeStamp2($Info{DUDailyMaxTime});
+    my $DUInodemaxTime = timeStamp2($Info{DUInodeDailyMaxTime});
 
     my $content = eval ("qq{$Lang->{BackupPC_Summary}}");
     Header($Lang->{BackupPC__Server_Summary}, $content);

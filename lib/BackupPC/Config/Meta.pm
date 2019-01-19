@@ -27,7 +27,7 @@
 #
 #========================================================================
 #
-# Version 4.2.0, released 8 Apr 2018.
+# Version 4.2.2, released 27 Oct 2018.
 #
 # See http://backuppc.sourceforge.net.
 #
@@ -89,6 +89,7 @@ use vars qw(%ConfigMeta);
     Ping6Path	 	=> {type => "execPath", undefIfEmpty => 1},
     DfPath	 	=> {type => "execPath", undefIfEmpty => 1},
     DfCmd	 	=> "string",
+    DfInodeUsageCmd	=> "string",
     SplitPath	 	=> {type => "execPath", undefIfEmpty => 1},
     ParPath	 	=> {type => "execPath", undefIfEmpty => 1},
     CatPath	 	=> {type => "execPath", undefIfEmpty => 1},
@@ -96,6 +97,7 @@ use vars qw(%ConfigMeta);
     Bzip2Path	 	=> {type => "execPath", undefIfEmpty => 1},
     RrdToolPath	 	=> {type => "execPath", undefIfEmpty => 1},
     DfMaxUsagePct	=> "float",
+    DfMaxInodeUsagePct	=> "float",
     DHCPAddressRanges   => {
             type    => "list",
 	    emptyOk => 1,
@@ -346,6 +348,7 @@ use vars qw(%ConfigMeta);
     EMailNotifyMinDays        => "float",
     EMailFromUserName         => "string",
     EMailAdminUserName        => "string",
+    EMailAdminSubject         => "string",
     EMailUserDestDomain       => "string",
     EMailNoBackupEverSubj     => {type => "string",    undefIfEmpty => 1},
     EMailNoBackupEverMesg     => {type => "bigstring", undefIfEmpty => 1},
@@ -455,7 +458,6 @@ use vars qw(%ConfigMeta);
                 RsyncdClientPort          => "boolean",
                 RsyncdUserName            => "boolean",
                 RsyncdPasswd              => "boolean",
-                RsyncdAuthRequired        => "boolean",
                 RsyncArgs                 => "boolean",
                 RsyncArgsExtra            => "boolean",
                 RsyncRestoreArgs          => "boolean",
@@ -496,6 +498,7 @@ use vars qw(%ConfigMeta);
                 UserCmdCheckStatus        => "boolean",
                 EMailNotifyMinDays        => "boolean",
                 EMailFromUserName         => "boolean",
+                EMailAdminSubject         => "boolean",
                 EMailAdminUserName        => "boolean",
                 EMailUserDestDomain       => "boolean",
                 EMailNoBackupEverSubj     => "boolean",

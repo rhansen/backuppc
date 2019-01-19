@@ -27,7 +27,7 @@
 #
 #========================================================================
 #
-# Version 4.2.0, released 8 Apr 2018.
+# Version 4.2.2, released 27 Oct 2018.
 #
 # See http://backuppc.sourceforge.net.
 #
@@ -69,6 +69,8 @@ our %ConfigMenu = (
             {text => "CfgEdit_Title_Pool_Filesystem_Limits"},
 	    {name => "DfCmd"},
 	    {name => "DfMaxUsagePct"},
+	    {name => "DfInodeUsageCmd"},
+	    {name => "DfMaxInodeUsagePct"},
 	    {name => "HardLinkMax"},
 
             {text => "CfgEdit_Title_Other_Parameters"},
@@ -125,6 +127,7 @@ our %ConfigMenu = (
             {name => "EMailNotifyMinDays"},
             {name => "EMailFromUserName"},
             {name => "EMailAdminUserName"},
+            {name => "EMailAdminSubject"},
             {name => "EMailUserDestDomain"},
 
             {text => "CfgEdit_Title_Email_User_Messages"},

@@ -21,6 +21,89 @@
 # Version __VERSION__, __RELEASEDATE__
 #------------------------------------------------------------------------
 
+#------------------------------------------------------------------------
+# Version 4.3.0, 25 Nov 2018
+#------------------------------------------------------------------------
+
+Merged pull requests #200, #208, #216, #217, #229, #230, #231, #232,
+  #233, #235.
+
+* Added checking of file system inode usage, with new configuration
+  settings $Conf{DfInodeUsageCmd} and $Conf{DfMaxInodeUsagePct}.
+
+* bin/BackupPC_tarExtract: fixes to hardlink handling on incrementals,
+  plus cleanup
+
+* bin/BackupPC_backupDuplicate: fixed directory creation for copying v3
+  backups.
+
+* bin/BackupPC_backupDelete: couple of inode-related bug fixes; also do
+  fsck if $Conf{RefCntFsck} != 0.
+
+* bin/BackupPC: fixed handling of dhcp hosts, reported by Jean-Marc.
+
+* bin/BackupPC: improved version check of rsync_bpc to allow period
+  before "beta", reported by @ktenney in issue #214.
+
+* Added $Conf{EMailAdminSubject} to allow the admin email subject to
+  be set.
+
+* Changed default $Conf{CgiDateFormatMMDD} to 2 (YYYY-MM-DD), submitted
+  by @moisseev (#231).
+
+* Allow multiple groups in $Conf{CgiAdminUserGroup}, submitted by
+  @moisseev (#235).
+
+* Improvements to html table sorting, and made more tables sortable,
+  submitted by @brenard and @moisseev (issue #199, PRs #200, #229, #230,
+  #232).
+
+* Add action type column to queue status page (#208), submitted by
+  @brenard.
+
+* lib/BackupPC/CGI/Summary.pm: host summary only reports age of completed
+  backups (not partial or active), suggested by Michael Selway.
+
+* lib/BackupPC/CGI/HostInfo.pm: show active backup as partial if there
+  is no job running (to handle case of abnormal exit of BackupPC),
+  reported by @8666 in issue #220.
+
+* systemd/src/backuppc.service: added ExecReload, submitted by
+  @opoplawski (#233).
+
+* lib/BackupPC/Xfer/Rsync.pm: empty $Conf{RsyncdPasswd} is no longer fatal;
+  removed remaining mentions of RsyncdAuthRequired from conf/config.pl
+  and lib/BackupPC/Config/Meta.pm; reported by @jooola in issue #224.
+
+* bin/BackupPC_dump: moved alarm($Conf{ClientTimeout}) to after all the
+  pre-backup code (including expiry, duplication etc of backups, which
+  could be slow) reprted by Michael Selway.
+
+* bin/BackupPC_refCntUpdate: added a couple of __bpc_progress_state__ prints
+  to improve status reporting during nightly (-m), reprted by Michael Selway.
+
+* lib/BackupPC/CGI/RSS.pm: added Disabled value to host info (copied from
+  $Conf{BackupsDisable}); suggested by @danielmotaleite (issue #222).
+
+* lib/BackupPC/Xfer/Rsync.pm: added checks for a couple of common rsync
+  file error and error exit messages that now increment the xferErrs count.
+
+* bin/BackupPC_tarExtract: errors related to a particular file are counted
+  as Xfer errors, rather than considered fatal.
+
+* bin/BackupPC_dump: added check that $LogFd is defined before using it.
+
+* lib/BackupPC/Lib.pm: replaced exit() with POSIX::_exit() so that object
+  destruction is skipped in the child process.  This fixes corruption of
+  the compressed XferLOG file if the exec of $Conf{DumpPostUserCmd} fails.
+
+* conf/config.pl: updated project home page to https://backuppc.github.io/backuppc
+  in email message footers.
+
+#------------------------------------------------------------------------
+# Version 4.2.1, 7 May 2018
+#------------------------------------------------------------------------
+
 Merged pull request #195.
 
 * Added new config variable $Conf{CgiUserDeleteBackupEnable} that

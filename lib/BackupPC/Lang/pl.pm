@@ -96,6 +96,9 @@ $Lang{BackupPC_Server_Status_General_Info}= <<EOF;
         <li>Ostatni obszar systemu plików to \$Info{DUlastValue}%
             (\$DUlastTime), dzisiejsza maksymalna wartość to \$Info{DUDailyMax}% (\$DUmaxTime)
             a wczorajszy był \$Info{DUDailyMaxPrev}%.
+        <li>Inode Ostatni obszar systemu plików to \$Info{DUInodelastValue}%
+            (\$DUlastTime), dzisiejsza maksymalna wartość to \$Info{DUInodeDailyMax}% (\$DUInodemaxTime)
+            a wczorajszy był \$Info{DUInodeDailyMaxPrev}%.
     </ul>
 </ul>
 EOF
@@ -106,7 +109,7 @@ $Lang{BackupPC_Server_Status} = <<EOF;
 <p>
 \${h2("Aktualnie Działające Prace")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td> Host </td>
     <td> Typ </td>
     <td> Użytkownik </td>
@@ -125,7 +128,7 @@ $Lang{BackupPC_Server_Status} = <<EOF;
 
 \${h2("Błędy które wymagają uwagi")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td align="center"> Host </td>
     <td align="center"> Typ </td>
     <td align="center"> Użytkownik </td>
@@ -149,6 +152,9 @@ $Lang{BackupPC_Summary} = <<EOF;
 <li>Ostatni obszar systemu plików to \$Info{DUlastValue}%
     (\$DUlastTime), dzisiejsza maksymalna wartość to \$Info{DUDailyMax}% (\$DUmaxTime)
     a wczorajszy był \$Info{DUDailyMaxPrev}%.
+<li>Inode Ostatni obszar systemu plików to \$Info{DUInodelastValue}%
+    (\$DUlastTime), dzisiejsza maksymalna wartość to \$Info{DUInodeDailyMax}% (\$DUInodemaxTime)
+    a wczorajszy był \$Info{DUInodeDailyMaxPrev}%.
 </ul>
 </p>
 
@@ -185,6 +191,7 @@ Jest \$hostCntNone hostów bez kopii bezpieczeństwa.
 <table class="sortable" id="host_summary_nobackups" border cellpadding="3" cellspacing="1">
 <tr class="tableheader"><td> Host </td>
     <td align="center"> Użytkonik </td>
+    <td align="center"> Komentarz </td>
     <td align="center"> #Pełny </td>
     <td align="center"> Pełny Wiek (dni </td>
     <td align="center"> Pełny Rozmiar (GiB) </td>
@@ -379,8 +386,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 <p>
 Następujący użytkonicy są w kolejce:
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> Host </td>
+    <td> Action </td>
     <td> Czas do </td>
     <td> Użytkownik </td></tr>
 \$strUser
@@ -390,8 +398,9 @@ Następujący użytkonicy są w kolejce:
 <p>
 Następujące kolejki będące w tle czekają na wykonanie :
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> Host </td>
+    <td> Action </td>
     <td> Czas do </td>
     <td> uzytkownik </td></tr>
 \$strBg
@@ -400,8 +409,9 @@ Następujące kolejki będące w tle czekają na wykonanie :
 <p>
 Następujące kolejki poleceń czekają na wykonanie :
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> Host </td>
+    <td> Action </td>
     <td> Czas do </td>
     <td> Użytkownik </td>
     <td> Polecenie </td></tr>
@@ -430,7 +440,7 @@ $Lang{BackupPC__Log_File_History} = "BackupPC: Historia Dziennika";
 $Lang{Log_File_History__hdr} = <<EOF;
 \${h1("Histria Dziennika \$hdr")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> Plik </td>
     <td align="center"> Rozmiar </td>
     <td align="center"> Czas Modyfikacji </td></tr>
@@ -442,7 +452,7 @@ EOF
 $Lang{Recent_Email_Summary} = <<EOF;
 \${h1("Podsumowanie Emaili (kojeność odwrotna)")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> Adresat </td>
     <td align="center"> Nadawca </td>
     <td align="center"> Czas </td>
@@ -705,7 +715,7 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 <p>
 Kliknij na numer kopii aby przeglądać i przywracać wybrane pliki/katalogi.
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td align="center"> Backup# </td>
     <td align="center"> Typ </td>
     <td align="center"> Wypełniony </td>
@@ -723,7 +733,7 @@ Kliknij na numer kopii aby przeglądać i przywracać wybrane pliki/katalogi.
 \$restoreStr
 </p>
 \${h2("Podsumowanie błędów Xfer")}
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> Backup# </td>
     <td align="center"> Typ </td>
     <td align="center"> Widok </td>
@@ -741,13 +751,13 @@ Istniejące pliki to te będące aktualnie w puli; nowe pliki to te dodane
 do puli.
 Puste pliki i błędy SMB nie są liczone.
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td colspan="2" bgcolor="#ffffff"></td>
     <td align="center" colspan="3"> Łącznie </td>
     <td align="center" colspan="2"> Istniejących plików </td>
     <td align="center" colspan="2"> Nowych plików </td>
 </tr>
-<tr class="tableheader">
+<tr class="tableheader sortheader">
     <td align="center"> Kopia nr </td>
     <td align="center"> Typ </td>
     <td align="center"> Plików </td>
@@ -765,12 +775,12 @@ Puste pliki i błędy SMB nie są liczone.
 <p>
 Wydajność kompresji dla plików będących w puli oraz tych świeżo skompresowanych.
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td colspan="3" bgcolor="#ffffff"></td>
     <td align="center" colspan="3"> Istniejące Pliki </td>
     <td align="center" colspan="3"> Nowe Pliki </td>
 </tr>
-<tr class="tableheader"><td align="center"> Kopia nr </td>
+<tr class="tableheader sortheader"><td align="center"> Kopia nr </td>
     <td align="center"> Typ </td>
     <td align="center"> Poziom Kompresji </td>
     <td align="center"> Rozmiar/MB </td>
@@ -1214,7 +1224,7 @@ $Lang{Restore_Summary} = <<EOF;
 \${h2("Podsumowanie przywracania")}
 <p>
 Kliknij na numer przywrócenia dla informacji.
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> Nr przywrócenia# </td>
     <td align="center"> Wynik </td>
     <td align="right"> Data początku</td>
@@ -1318,7 +1328,7 @@ nastepnym razem kiedy bedziesz przy nim.
 
 Pozdrawiam ,
 Czarodziej BackupPC
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 # No recent backup
@@ -1347,7 +1357,7 @@ i załącznikami) nie będą przywrócone jeżeli dysk ulegnie awarii.
 
 Pozdrowienia,
 Czarodziej BackupPC
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 # Old Outlook files
@@ -1378,7 +1388,7 @@ complete.
 
 Regards,
 BackupPC Genie
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 $Lang{howLong_not_been_backed_up} = "utworzenie kopii nie zostało zakonczone pomyślnie";
@@ -1397,6 +1407,7 @@ Prędkość MB/sek: \$fullRate;
 Ilość Inkr: \$incrCnt;
 Inkr wiek/Dni: \$incrAge;
 Status: \$host_state;
+Wyłączone: \$host_disabled;
 Ostatnia próba: \$host_last_attempt;
 EOF
 

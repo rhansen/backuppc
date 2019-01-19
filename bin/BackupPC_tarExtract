@@ -26,7 +26,7 @@
 #
 #========================================================================
 #
-# Version 4.2.0, released 8 Apr 2018.
+# Version 4.2.2, released 3 Nov 2018.
 #
 # See http://backuppc.sourceforge.net.
 #
@@ -159,9 +159,10 @@ my $tar_unpack_header
     = 'Z100 A8 A8 A8 a12 A12 A8 A1 Z100 A6 A2 Z32 Z32 A8 A8 A155 x12';
 my $tar_header_length = 512;
 
-my $BufSize  = 1048576;     # 1MB or 2^20
-my $MaxFiles = 20;
-my $Errors   = 0;
+my $BufSize       = 1048576;     # 1MB or 2^20
+my $MaxFiles      = 20;
+my $Errors        = 0;
+my $FatalErrors   = 0;
 
 my $ExistFileCnt      = 0;
 my $ExistFileSize     = 0;
@@ -202,6 +203,7 @@ sub TarRead
             $Abort = 1;
             $AbortReason = "Unexpected end of tar archive";
             $Errors++;
+            $FatalErrors++;
             return;
         }
         $numBytes += $newBytes;
@@ -299,6 +301,7 @@ sub TarReadFileInfo
         if (unpack ("%16C*", $head) != $chksum) {
            print("$name: checksum error at " . sysseek($fh, 0, 1) , "\n");
            $Errors++;
+           $FatalErrors++;
         }
 
         if ( $type eq "L" ) {
@@ -406,28 +409,46 @@ sub moveFileToOld
         #
         # A new file will be created, so add delete attribute to old
         #
-        $AttrOld->set($f->{name}, { type => BPC_FTYPE_DELETED }) if ( $AttrOld );
+        if ( $AttrOld ) {
+            $AttrOld->set($f->{name}, { type => BPC_FTYPE_DELETED });
+            print("moveFileToOld: added $f->{name} as BPC_FTYPE_DELETED in old\n")
+                                                if ( $Conf{XferLogLevel} >= 5 );
+        }
         return;
     }
     print("moveFileToOld: $a->{name}, $f->{name}, links = $a->{nlinks}, type = $a->{type}\n")
                                         if ( $Conf{XferLogLevel} >= 5 );
-    if ( $a->{nlinks} > 0 ) {
-        $a->{nlinks}--;
-        if ( $a->{nlinks} <= 0 ) {
-            $AttrNew->deleteInode($a->{inode});
-            $DeltaNew->update($a->{compress}, $a->{digest}, -1);
+    if ( $a->{type} != BPC_FTYPE_DIR ) {
+        if ( $a->{nlinks} > 0 ) {
+	    if ( $AttrOld ) {
+		if ( !$AttrOld->getInode($a->{inode}) ) {
+                    #
+                    # copy inode to old if it isn't already there
+                    #
+		    $AttrOld->setInode($a->{inode}, $a);
+		    $DeltaOld->update($a->{compress}, $a->{digest}, 1);
+		}
+                #
+                # copy to old - no need for refeence count update since
+                # inode is already there
+                #
+		$AttrOld->set($f->{name}, $a, 1) if ( !$AttrOld->get($f->{name}) );
+	    }
+            $a->{nlinks}--;
+            if ( $a->{nlinks} <= 0 ) {
+                $AttrNew->deleteInode($a->{inode});
+                $DeltaNew->update($a->{compress}, $a->{digest}, -1);
+            } else {
+                $AttrNew->setInode($a->{inode}, $a);
+            }
         } else {
-            $AttrNew->setInode($a->{inode}, $a);
+            $DeltaNew->update($a->{compress}, $a->{digest}, -1);
+            if ( $AttrOld && !$AttrOld->get($f->{name}) && $AttrOld->set($f->{name}, $a, 1) ) {
+                $DeltaOld->update($a->{compress}, $a->{digest}, 1);
+            }
         }
+        $AttrNew->delete($f->{name});
     } else {
-        $DeltaNew->update($a->{compress}, $a->{digest}, -1)
-                                        if ( length($a->{digest}) );
-        if ( $AttrOld && !$AttrOld->get($f->{name}) && $AttrOld->set($f->{name}, $a, 1) ) {
-            $DeltaOld->update($a->{compress}, $a->{digest}, 1);
-        }
-    }
-    $AttrNew->delete($f->{name});
-    if ( $a->{type} == BPC_FTYPE_DIR ) {
         if ( !$AttrOld || $AttrOld->get($f->{name}) ) {
             #
             # Delete the directory tree, including updating reference counts
@@ -446,16 +467,20 @@ sub moveFileToOld
             my $pathOld = $AttrOld->getFullMangledPath($f->{name});
             print("moveFileToOld(..., $f->{name}): renaming $pathNew to $pathOld\n")
                                      if ( $Conf{XferLogLevel} >= 3 );
-            $AttrNew->flush(0, $f->{name});
-            BackupPC::XS::DirOps::refCountAll($pathNew, $a->{compress}, -1, $DeltaNew);
-            BackupPC::XS::DirOps::refCountAll($pathNew, $a->{compress},  1, $DeltaOld);
-            copyInodes($f->{name});
             pathCreate($pathOld);
+            $AttrNew->flush(0, $f->{name});
             if ( !rename($pathNew, $pathOld) ) {
-                print("moveFileToOld(..., $f->{name}): can't rename $pathNew to $pathOld\n");
+                printf("moveFileToOld(..., %s: can't rename %s to %s ($!, %d, %d, %d)\n",
+			    $f->{name}, $pathNew, $pathOld, -e $pathNew, -e $pathOld, -d $pathOld);
                 $Errors++;
+            } else {
+                BackupPC::XS::DirOps::refCountAll($pathOld, $a->{compress}, -1, $DeltaNew);
+                BackupPC::XS::DirOps::refCountAll($pathOld, $a->{compress},  1, $DeltaOld);
+                copyInodes($f->{name});
+                $AttrOld->set($f->{name}, $a, 1);
             }
         }
+        $AttrNew->delete($f->{name});
     }
 }
 
@@ -545,6 +570,7 @@ sub TarReadFile
                     print("Unexpected end of tar archive during read\n");
                     $AbortReason = "Unexpected end of tar archive";
                     $Errors++;
+                    $FatalErrors++;
                 }
                 $Abort = 1;
                 print("Removing partial file $f->{name}\n")
@@ -868,7 +894,7 @@ sub pathCreate
     unlink($fullPath) if ( -e $fullPath );
     eval { mkpath($fullPath, 0, 0777) };
     if ( $@ ) {
-        print("Can't create $fullPath\n");
+        print("Can't create $fullPath ($!)\n");
         $Errors++;
         return -1;
     }
@@ -965,7 +991,7 @@ sub exitMesg
         . " $ExistFileCnt filesExist, $ExistFileSize sizeExist, $ExistFileCompSize sizeExistComp,"
         . " $TotalFileCnt filesTotal, $TotalFileSize sizeTotal,"
         . " $NewFileCnt filesNew, $NewFileSize sizeNew, $NewFileCompSize sizeNewComp, $Inode inodeLast\n");
-    exit($Errors ? 1 : 0);
+    exit($FatalErrors ? 1 : 0);
 }
 
 #######################################################################

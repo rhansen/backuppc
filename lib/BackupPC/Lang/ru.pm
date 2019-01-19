@@ -98,6 +98,9 @@ $Lang{BackupPC_Server_Status_General_Info}= <<EOF;
         <li>Файловая система пула занята на \$Info{DUlastValue}%
             (\$DUlastTime), сегодняшний максимум \$Info{DUDailyMax}% (\$DUmaxTime),
             вчерашний максимум \$Info{DUDailyMaxPrev}%.
+        <li>Inode Файловая система пула занята на \$Info{DUInodelastValue}%
+            (\$DUlastTime), сегодняшний максимум \$Info{DUInodeDailyMax}% (\$DUInodemaxTime),
+            вчерашний максимум \$Info{DUInodeDailyMaxPrev}%.
     </ul>
 </ul>
 EOF
@@ -108,7 +111,7 @@ $Lang{BackupPC_Server_Status} = <<EOF;
 <p>
 \${h2("Работы, выполняемые в данный момент времени")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td>Узел</td>
     <td>Тип</td>
     <td>Пользователь</td>
@@ -127,7 +130,7 @@ $Lang{BackupPC_Server_Status} = <<EOF;
 
 \${h2("Сбои, нуждающиеся внимания")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td align="center">Узел</td>
     <td align="center">Тип</td>
     <td align="center">Пользователь</td>
@@ -151,6 +154,9 @@ $Lang{BackupPC_Summary} = <<EOF;
 <li>Файловая система пула занята на \$Info{DUlastValue}%
     (\$DUlastTime), сегодняшний максимум \$Info{DUDailyMax}% (\$DUmaxTime),
         вчерашний максимум \$Info{DUDailyMaxPrev}%.
+<li>Inode Файловая система пула занята на \$Info{DUInodelastValue}%
+    (\$DUlastTime), сегодняшний максимум \$Info{DUInodeDailyMax}% (\$DUInodemaxTime),
+    вчерашний максимум \$Info{DUInodeDailyMaxPrev}%.
 </ul>
 </p>
 
@@ -187,6 +193,7 @@ $Lang{BackupPC_Summary} = <<EOF;
 <table class="sortable" id="host_summary_nobackups" border cellpadding="3" cellspacing="1">
 <tr class="tableheader"><td>Узел</td>
     <td align="center">Поль-ль</td>
+    <td align="center">Комментарий</td>
     <td align="center">Кол-во ПОЛН. копий</td>
     <td align="center">ПОЛН. возраст (дни)</td>
     <td align="center">ПОЛН. размер (ГБ)</td>
@@ -381,8 +388,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 <p>
 Следующие запросы находятся в очереди:
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> Узел </td>
+    <td> Action </td>
     <td> Время Запроса </td>
     <td> Пользователь </td></tr>
 \$strUser
@@ -392,8 +400,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 <p>
 Следующие фоновые запросы находятся в очереди:
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> Узел </td>
+    <td> Action </td>
     <td> Время Запроса </td>
     <td> Пользователь </td></tr>
 \$strBg
@@ -402,8 +411,9 @@ $Lang{Backup_Queue_Summary} = <<EOF;
 <p>
 Следующие команды находятся в очереди:
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td> Узел </td>
+    <td> Action </td>
     <td> Время Запроса </td>
     <td> Пользователь </td>
     <td> Команда </td></tr>
@@ -432,7 +442,7 @@ $Lang{BackupPC__Log_File_History} = "BackupPC: Log File History";
 $Lang{Log_File_History__hdr} = <<EOF;
 \${h1("Архив Журналов \$hdr")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> Файл </td>
     <td align="center"> Размер </td>
     <td align="center"> Время изменения </td></tr>
@@ -444,7 +454,7 @@ EOF
 $Lang{Recent_Email_Summary} = <<EOF;
 \${h1("Сводка по Последним Письмам (в обратном порядке времени)")}
 <p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> Получатель </td>
     <td align="center"> Узел </td>
     <td align="center"> Время </td>
@@ -706,7 +716,7 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 <p>
 Щёлкните по номеру для просмотра и восстановления скопированных файлов.
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3">
 <tr class="tableheader"><td align="center"> № </td>
     <td align="center"> Тип </td>
     <td align="center"> Полный </td>
@@ -724,7 +734,7 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 \$restoreStr
 </p>
 \${h2("Сводка Ошибок при Копировании")}
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> № </td>
     <td align="center"> Тип </td>
     <td align="center"> Журнал </td>
@@ -743,13 +753,13 @@ $Lang{Host__host_Backup_Summary2} = <<EOF;
 Пустые файлы не учитываются.
 Empty files and SMB errors aren\'t counted in the reuse and new counts.
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td colspan="2" bgcolor="#ffffff"></td>
     <td align="center" colspan="3"> Всего </td>
     <td align="center" colspan="2"> Существующие Файлы </td>
     <td align="center" colspan="2"> Новые Файлы </td>
 </tr>
-<tr class="tableheader">
+<tr class="tableheader sortheader">
     <td align="center"> № </td>
     <td align="center"> Тип </td>
     <td align="center"> Файлов </td>
@@ -767,12 +777,12 @@ Empty files and SMB errors aren\'t counted in the reuse and new counts.
 <p>
 Степень сжатия существующих и новых файлов.
 </p>
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td colspan="3" bgcolor="#ffffff"></td>
     <td align="center" colspan="3"> Существующие Файлы </td>
     <td align="center" colspan="3"> Новые Файлы </td>
 </tr>
-<tr class="tableheader"><td align="center"> № </td>
+<tr class="tableheader sortheader"><td align="center"> № </td>
     <td align="center"> Тип </td>
     <td align="center"> Уровень Сжатия </td>
     <td align="center"> Размер(МБ) </td>
@@ -1217,7 +1227,7 @@ $Lang{Restore_Summary} = <<EOF;
 \${h2("Сводка Восстановлений")}
 <p>
 Щёлкните по номеру для более детального просмотра.
-<table class="tableStnd" border cellspacing="1" cellpadding="3" width="80%">
+<table class="tableStnd sortable" border cellspacing="1" cellpadding="3" width="80%">
 <tr class="tableheader"><td align="center"> № </td>
     <td align="center"> Результат </td>
     <td align="right"> Дата начала </td>
@@ -1323,7 +1333,7 @@ next time you are in the office.
 
 Regards,
 BackupPC Genie
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 # No recent backup
@@ -1352,7 +1362,7 @@ attachments) cannot be restored if your PC disk crashes.
 
 Regards,
 BackupPC Genie
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 # Old Outlook files
@@ -1383,7 +1393,7 @@ complete.
 
 Regards,
 BackupPC Genie
-http://backuppc.sourceforge.net
+https://backuppc.github.io/backuppc
 EOF
 
 $Lang{howLong_not_been_backed_up} = "not been backed up successfully";
@@ -1402,6 +1412,7 @@ Speed MB/sec: \$fullRate;
 Incr Count: \$incrCnt;
 Incr Age/Days: \$incrAge;
 State: \$host_state;
+Disabled: \$host_disabled;
 Last Attempt: \$host_last_attempt;
 EOF
 

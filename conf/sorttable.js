@@ -11,22 +11,34 @@ function sortables_init() {
     tbls = document.getElementsByTagName("table");
     for (ti=0;ti<tbls.length;ti++) {
         thisTbl = tbls[ti];
-        if (((' '+thisTbl.className+' ').indexOf("sortable") != -1) && (thisTbl.id)) {
-            //initTable(thisTbl.id);
+        if (ts_hasClass(thisTbl, "sortable")) {
             ts_makeSortable(thisTbl);
         }
     }
 }
 
-function ts_makeSortable(table) {
+function ts_getHeaderRowIdx(table) {
     if (table.rows && table.rows.length > 0) {
-        var firstRow = table.rows[0];
+        // Find first table row with class sortheader
+        for (var i=0;i<table.rows.length;i++) {
+          if (ts_hasClass(table.rows[i], "sortheader")) {
+            return i;
+          }
+        }
+        // No row found with class sortheader : assume first's one is the header
+        return 0;
     }
-    if (!firstRow) return;
+    return false;
+}
+
+
+function ts_makeSortable(table) {
+    var headerRowIdx = ts_getHeaderRowIdx(table);
+    if (headerRowIdx === false) return;
+    var headerRow = table.rows[headerRowIdx];
     
-    // We have a first row: assume it's the header, and make its contents clickable links
-    for (var i=0;i<firstRow.cells.length;i++) {
-        var cell = firstRow.cells[i];
+    for (var i=0;i<headerRow.cells.length;i++) {
+        var cell = headerRow.cells[i];
         var txt = ts_getInnerText(cell);
         cell.innerHTML = '<a href="#" class="sortheader" '+ 
         'onclick="ts_resortTable(this, '+i+');return false;">' + 
@@ -37,7 +49,11 @@ function ts_makeSortable(table) {
 function ts_getInnerText(el) {
 	if (typeof el == "string") return el;
 	if (typeof el == "undefined") { return el };
-	if (el.innerText) return el.innerText;	//Not needed but it is faster
+
+    // Not needed but it is faster.
+    // We have to trim the content as some versions of Chrome append a trailing tab.
+    if (el.innerText) return el.innerText.trim();
+
 	var str = "";
 	
 	var cs = el.childNodes;
@@ -63,22 +79,31 @@ function ts_resortTable(lnk,clid) {
     }
     var spantext = ts_getInnerText(span);
     var td = lnk.parentNode;
-    var column = clid || td.cellIndex;
+    SORT_COLUMN_INDEX = clid || td.cellIndex;
     var table = getParent(td,'TABLE');
     
     // Work out a type for the column
     if (table.rows.length <= 1) return;
-    var itm = ts_getInnerText(table.rows[1].cells[column]);
+    var cell = table.rows[1].cells[SORT_COLUMN_INDEX];
+    var itm = ts_getInnerText(cell);
+    var date_format = cell.dataset.date_format;    // Get date format from data-* attribute
+
     sortfn = ts_sort_caseinsensitive;
-    if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d\d\d$/)) sortfn = ts_sort_date;
-    if (itm.match(/^\d\d[\/-]\d\d[\/-]\d\d$/)) sortfn = ts_sort_date;
-    if (itm.match(/^[£$]/)) sortfn = ts_sort_currency;
-    if (itm.match(/^[\d\.]+$/)) sortfn = ts_sort_numeric;
-    SORT_COLUMN_INDEX = column;
-    var firstRow = new Array();
+    if (date_format === "0") {
+        sortfn = ts_sort_date_0;
+    } else if (date_format === "1") {
+        sortfn = ts_sort_date_1;
+    } else if (itm.match(/^[£$]/)) {
+        sortfn = ts_sort_currency;
+    } else if (itm.match(/^[\d\.]+$/)) {
+        sortfn = ts_sort_numeric;
+    }
+
+    var headerRowIdx = ts_getHeaderRowIdx(table);
+    var headerRow = new Array();
     var newRows = new Array();
-    for (i=0;i<table.rows[0].length;i++) { firstRow[i] = table.rows[0][i]; }
-    for (j=1;j<table.rows.length;j++) { newRows[j-1] = table.rows[j]; }
+    for (i=0;i<table.rows[headerRowIdx].length;i++) { headerRow[i] = table.rows[0][i]; }
+    for (j=headerRowIdx+1;j<table.rows.length;j++) { newRows[j-headerRowIdx-1] = table.rows[j]; }
 
     newRows.sort(sortfn);
 
@@ -117,59 +142,77 @@ function getParent(el, pTagName) {
 	else
 		return getParent(el.parentNode, pTagName);
 }
-function ts_sort_date(a,b) {
-    // y2k notes: two digit years less than 50 are treated as 20XX, greater than 50 are treated as 19XX
-    aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]);
-    bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]);
-    if (aa.length == 10) {
-        dt1 = aa.substr(6,4)+aa.substr(3,2)+aa.substr(0,2);
-    } else {
-        yr = aa.substr(6,2);
-        if (parseInt(yr) < 50) { yr = '20'+yr; } else { yr = '19'+yr; }
-        dt1 = yr+aa.substr(3,2)+aa.substr(0,2);
-    }
-    if (bb.length == 10) {
-        dt2 = bb.substr(6,4)+bb.substr(3,2)+bb.substr(0,2);
-    } else {
-        yr = bb.substr(6,2);
-        if (parseInt(yr) < 50) { yr = '20'+yr; } else { yr = '19'+yr; }
-        dt2 = yr+bb.substr(3,2)+bb.substr(0,2);
-    }
-    if (dt1==dt2) return 0;
-    if (dt1<dt2) return -1;
-    return 1;
+
+function ts_hasClass(el, className) {
+        if ((' '+el.className+' ').indexOf((' '+className+' ')) != -1) {
+		return true;
+	}
+	return false;
 }
 
-function ts_sort_currency(a,b) { 
-    aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]).replace(/[^0-9.]/g,'');
-    bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]).replace(/[^0-9.]/g,'');
+function getCellText(row) {
+    return ts_getInnerText(row.cells[SORT_COLUMN_INDEX]);
+}
+
+/**
+ * Parse a date string and convert it to a JavaScript Date object.
+ * @param {string} str - Date string.
+ * @param {number} format - Date format: 0 - "MM/DD HH:MM" or "MM/DD/YY HH:MM", 1 - "DD/MM HH:MM" or "DD/MM/YY HH:MM".
+ * @returns {object} JavaScript Date object.
+ */
+function str2date(str, format) {
+    var arr = str.match(/(\d{1,2})\/(\d{1,2})(?:\/(\d{2}))? (\d{2}):(\d{2})/);
+
+    var year = arr[3] ? ara[3] : (new Date()).getFullYear();
+    var month = arr[format ? 1 : 2] - 1;
+    var day = arr[format ? 2 : 1];
+    var hour = arr[4];
+    var minute = arr[5];
+
+    return new Date(year, month, day, hour, minute);
+}
+
+function ts_sort_date_0(a,b) {
+    var aa = getCellText(a);
+    var bb = getCellText(b);
+    return str2date(aa, 0) - str2date(bb, 0);
+}
+
+function ts_sort_date_1(a,b) {
+    var aa = getCellText(a);
+    var bb = getCellText(b);
+    return str2date(aa, 1) - str2date(bb, 1);
+}
+
+function ts_sort_currency(a,b) {
+    var aa = getCellText(a).replace(/[^0-9.]/g,'');
+    var bb = getCellText(b).replace(/[^0-9.]/g,'');
     return parseFloat(aa) - parseFloat(bb);
 }
 
-function ts_sort_numeric(a,b) { 
-    aa = parseFloat(ts_getInnerText(a.cells[SORT_COLUMN_INDEX]));
+function ts_sort_numeric(a,b) {
+    var aa = parseFloat(getCellText(a));
     if (isNaN(aa)) aa = 0;
-    bb = parseFloat(ts_getInnerText(b.cells[SORT_COLUMN_INDEX])); 
+    var bb = parseFloat(getCellText(b));
     if (isNaN(bb)) bb = 0;
     return aa-bb;
 }
 
 function ts_sort_caseinsensitive(a,b) {
-    aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]).toLowerCase();
-    bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]).toLowerCase();
+    var aa = getCellText(a).toLowerCase();
+    var bb = getCellText(b).toLowerCase();
     if (aa==bb) return 0;
     if (aa<bb) return -1;
     return 1;
 }
 
 function ts_sort_default(a,b) {
-    aa = ts_getInnerText(a.cells[SORT_COLUMN_INDEX]);
-    bb = ts_getInnerText(b.cells[SORT_COLUMN_INDEX]);
+    var aa = getCellText(a);
+    var bb = getCellText(b);
     if (aa==bb) return 0;
     if (aa<bb) return -1;
     return 1;
 }
-
 
 function addEvent(elm, evType, fn, useCapture)
 // addEvent and removeEvent
@@ -185,4 +228,4 @@ function addEvent(elm, evType, fn, useCapture)
   } else {
     alert("Handler could not be removed");
   }
-} 
+}

@@ -13,7 +13,7 @@
 #   Craig Barratt  <cbarratt@users.sourceforge.net>
 #
 # COPYRIGHT
-#   Copyright (C) 2001-2017  Craig Barratt
+#   Copyright (C) 2001-2018  Craig Barratt
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@
 #
 #========================================================================
 #
-# Version 4.1.2, released 30 Apr 2017.
+# Version 4.2.2, released 3 Nov 2018.
 #
 # See http://backuppc.sourceforge.net.
 #
@@ -132,9 +132,11 @@ if ( $err ) {
     if ( $opts{c} && $Conf{EMailAdminUserName} ne "" ) {
         my $headers = $Conf{EMailHeaders};
         $headers .= "\n" if ( $headers !~ /\n$/ );
+        my $subject = $Conf{EMailAdminSubject} ne "" ? $Conf{EMailAdminSubject}
+                                                     : "BackupPC: can't connect to server";
         my $mesg = <<EOF;
 To: $Conf{EMailAdminUserName}
-Subject: BackupPC: can't connect to server
+Subject: $subject
 $headers
 Error: cannot connect to BackupPC server.
 
@@ -159,9 +161,11 @@ eval($reply);
 if ( $opts{u} ne "" ) {
     my $headers = $Conf{EMailHeaders};
     $headers .= "\n" if ( $headers !~ /\n$/ );
+    my $subject = $Conf{EMailAdminSubject} ne "" ? $Conf{EMailAdminSubject}
+                                                 : "BackupPC test email";
     my $mesg = <<EOF;
 To: $opts{u}
-Subject: BackupPC test email
+Subject: $subject
 $headers
 This is a test message from $0.
 
@@ -206,53 +210,31 @@ foreach my $host ( sort(keys(%Status)) ) {
               || $user eq ""
           );
     my @Backups = $bpc->BackupInfoRead($host);
-    my $numBackups = @Backups;
-    if ( $numBackups == 0 ) {
-        my $subj = defined($HostConf{EMailNoBackupEverSubj})
-			? $HostConf{EMailNoBackupEverSubj}
-			: $Lang->{EMailNoBackupEverSubj};
-        my $mesg = defined($HostConf{EMailNoBackupEverMesg})
-		        ? $HostConf{EMailNoBackupEverMesg}
-			: $Lang->{EMailNoBackupEverMesg};
-        sendUserEmail($user, $host, $mesg, $subj, {
-                            userName => user2name($user)
-                        }) if ( !defined($Jobs{$host}) );
-        next;
-    }
-    my $last = my $lastFull = my $lastIncr = 0;
+    my $last = 0;
     my $lastGoodOutlook = 0;
     my $lastNum = -1;
     my $numBadOutlook = 0;
+    my $numBackups = 0;
     for ( my $i = 0 ; $i < @Backups ; $i++ ) {
         my $fh;
         #
-        # ignore partials -> only fulls and incrs should be used
-        # in figuring out when the last good backup was
+        # ignore partials and active backups -> only fulls and incrs
+        # should be used in figuring out when the last good backup was
         #
-        next if ( $Backups[$i]{type} eq "partial" );
-        $lastNum = $Backups[$i]{num} if ( $lastNum < $Backups[$i]{num} );
-        if ( $Backups[$i]{type} eq "full" ) {
-            $lastFull = $Backups[$i]{startTime}
-                    if ( $lastFull < $Backups[$i]{startTime} );
-        } else {
-            $lastIncr = $Backups[$i]{startTime}
-                    if ( $lastIncr < $Backups[$i]{startTime} );
-        }
-        $last = $Backups[$i]{startTime}
-                    if ( $last < $Backups[$i]{startTime} );
+        next if ( $Backups[$i]{type} eq "partial" || $Backups[$i]{type} eq "active" );
+        $lastNum = $Backups[$i]{num}    if ( $lastNum < $Backups[$i]{num} );
+        $last = $Backups[$i]{startTime} if ( $last < $Backups[$i]{startTime} );
+        $numBackups++;
+        next if ( $Backups[$i]{xferMethod} ne "smb" );
+
         my $badOutlook = 0;
-        my $file = "$TopDir/pc/$host/SmbLOG.$Backups[$i]{num}";
         my $comp = 0;
+        my $file = "$TopDir/pc/$host/XferLOG.$Backups[$i]{num}";
         if ( !-f $file ) {
-            $file = "$TopDir/pc/$host/XferLOG.$Backups[$i]{num}";
-            if ( !-f $file ) {
-                $comp = 1;
-                $file = "$TopDir/pc/$host/SmbLOG.$Backups[$i]{num}.z";
-                $file = "$TopDir/pc/$host/XferLOG.$Backups[$i]{num}.z"
-                                                        if ( !-f $file );
-            }
+            $comp = 1;
+            $file = "$TopDir/pc/$host/XferLOG.$Backups[$i]{num}.z";
         }
-        next if ( !defined($fh = BackupPC::XS::FileZIO::open($file, 0, $comp)) );
+        next if ( !-f $file || !defined($fh = BackupPC::XS::FileZIO::open($file, 0, $comp)) );
         while ( 1 ) {
             my $s = $fh->readLine();
             last if ( $s eq "" );
@@ -268,6 +250,18 @@ foreach my $host ( sort(keys(%Status)) ) {
             $lastGoodOutlook = $Backups[$i]{startTime}
                     if ( $lastGoodOutlook < $Backups[$i]{startTime} );
         }
+    }
+    if ( $numBackups == 0 ) {
+        my $subj = defined($HostConf{EMailNoBackupEverSubj})
+			? $HostConf{EMailNoBackupEverSubj}
+			: $Lang->{EMailNoBackupEverSubj};
+        my $mesg = defined($HostConf{EMailNoBackupEverMesg})
+		        ? $HostConf{EMailNoBackupEverMesg}
+			: $Lang->{EMailNoBackupEverMesg};
+        sendUserEmail($user, $host, $mesg, $subj, {
+                            userName => user2name($user)
+                        }) if ( !defined($Jobs{$host}) );
+        next;
     }
     if ( time - $last > $HostConf{EMailNotifyOldBackupDays} * 24*3600 ) {
         my $subj = defined($HostConf{EMailNoBackupRecentSubj})
@@ -334,9 +328,11 @@ misconfiguration.  Please fix this host:
 EOF
             my $headers = $Conf{EMailHeaders};
             $headers .= "\n" if ( $headers !~ /\n$/ );
+            my $subject = $Conf{EMailAdminSubject} ne "" ? $Conf{EMailAdminSubject}
+                                                         : "BackupPC administrative attention needed";
             $badHostMesg = <<EOF;
 To: $AdminBadHostsEmail[$i]
-Subject: BackupPC administrative attention needed
+Subject: $subject
 $headers
 ${badHostMesg}Regards,
 PC Backup Genie
@@ -357,12 +353,16 @@ my $adminMesg = "";
 if ( $Info{DUDailySkipHostCntPrev} > 0 ) {
     my $n = $Info{DUDailySkipHostCntPrev};
     my $m = $Conf{DfMaxUsagePct};
+    my $mInode = $Conf{DfMaxInodeUsagePct};
     $adminMesg .= <<EOF;
 Yesterday $n hosts were skipped because the file system containing
-$TopDir was too full.  The threshold in the
-configuration file is $m%, while yesterday the file system was
-up to $Info{DUDailyMaxPrev}% full.  Please find more space on the file system,
-or reduce the number of full or incremental backups that we keep.
+$TopDir was too full.  The threshold in the configuration
+file is currently $m%, while yesterday the file system was up
+to $Info{DUDailyMaxPrev}% full.  The maximum inode usage yesterday
+was $Info{DUInodeDailyMaxPrev}% and the threshold is currently $mInode%.
+
+Please find more space on the file system, or reduce the number of full
+or incremental backups that we keep.
 
 EOF
 }
@@ -395,9 +395,11 @@ EOF
 if ( $adminMesg ne "" && $Conf{EMailAdminUserName} ne "" ) {
     my $headers = $Conf{EMailHeaders};
     $headers .= "\n" if ( $headers !~ /\n$/ );
+    my $subject = $Conf{EMailAdminSubject} ne "" ? $Conf{EMailAdminSubject}
+                                                 : "BackupPC administrative attention needed";
     $adminMesg = <<EOF;
 To: $Conf{EMailAdminUserName}
-Subject: BackupPC administrative attention needed
+Subject: $subject
 $headers
 ${adminMesg}Regards,
 PC Backup Genie
