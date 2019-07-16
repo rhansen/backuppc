@@ -1,3 +1,9 @@
+backuppc (4.3.1) stable; urgency=medium
+
+  * New release BackupPC 4.3.1.
+
+ -- raoul <raoul@bhatia.at>  Tue, 16 Jul 2019 14:02:03 +0200
+
 backuppc (4.3.0) stable; urgency=medium
 
   * New release BackupPC 4.3.0.

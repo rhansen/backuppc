@@ -61,7 +61,7 @@ install: build
 
 	# Add here commands to install the package into debian/backuppc.
 	chmod 755 ./makeDist
-	./makeDist --releasedate "2018-11-26" --version "4.3.0"
+	./makeDist --releasedate "2019-07-15" --version "4.3.1"
 
 	mkdir buildroot
 	tar -xzf dist/*tar.gz --directory buildroot/ --strip-components=1
