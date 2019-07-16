@@ -87,7 +87,7 @@
 #
 #========================================================================
 #
-# Version 4.2.2, released 27 Oct 2018.
+# Version 4.3.0, released 25 Nov 2018.
 #
 # See http://backuppc.sourceforge.net.
 #
@@ -2041,7 +2041,6 @@ sub OrphanShareNameClean
     my $goodShares = {};
 
     foreach my $shareName ( @$shareNames ) {
-        $shareName = encode("utf8", $shareName);
         $goodShares->{$shareName} = 1;
     }
     my $attr = BackupPC::XS::Attrib::new($compress);
@@ -2175,9 +2174,14 @@ sub UserCommandRun
     #
     $bpc->cmdSystemOrEval($cmd,
 	    sub {
-		$XferLOG->write(\$_[0]);
-                print($LogFd $bpc->timeStamp, "Output from $cmdType: ", $_[0]);
-	    });
+                if ( $XferLOG && length($_[0]) ) {
+                    $XferLOG->write(\$_[0]);
+                } elsif ( $LogFd && length($_[0]) ) {
+                    print($LogFd $bpc->timeStamp, "Output from $cmdType: ", $_[0]);
+                }
+	    },
+            $vars, \%Conf
+        );
 }
 
 sub flushLibMessages()
