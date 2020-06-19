@@ -1,3 +1,9 @@
+backuppc (4.3.2-1~ubuntu20.04.1~ppa3) focal; urgency=medium
+
+  * No-change backport to focal
+
+ -- Richard Hansen <rhansen@rhansen.org>  Fri, 19 Jun 2020 00:38:33 -0400
+
 backuppc (4.3.2-1) UNRELEASED; urgency=medium
 
   * Pass --no-set-perms to configure.pl
