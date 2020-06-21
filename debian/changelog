@@ -1,10 +1,12 @@
 backuppc (4.3.2) stable; urgency=medium
 
   * New release BackupPC 4.3.2.
-  * pass the username to start-stop-daemon when reloading,
-    see Debian see Debian #944611
+  * Pass the username to start-stop-daemon when reloading,
+    see Debian see Debian #944611 and PR #9
+  * Pass --no-set-perms to configure.pl PR #13
+  * Install generated man pages PR #12.
 
- -- Raoul Bhatia <raoul@bhatia.at>  Sat, 09 May 2020 21:00:55 +0200
+ -- Raoul Bhatia <raoul@bhatia.at>  Sun, 21 Jun 2020 09:31:13 +0200
 
 backuppc (4.3.1) stable; urgency=medium
 
